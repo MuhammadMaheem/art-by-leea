@@ -24,7 +24,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Artisan Gallery — Original Art & Custom Commissions",
+  title: "Art By Leena — Original Art & Custom Commissions",
   description:
     "Discover original art pieces and request custom commissions. Handcrafted with passion, delivered to your door.",
 };

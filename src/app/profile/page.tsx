@@ -8,15 +8,17 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, Package, PenTool, User } from "lucide-react";
+import { LogOut, Package, PenTool, User, Lock } from "lucide-react";
 import Container from "@/components/layout/Container";
 import AuthGuard from "@/components/auth/AuthGuard";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import Skeleton from "@/components/ui/Skeleton";
+import { useToast } from "@/components/ui/Toast";
 import { formatPrice } from "@/utils/formatPrice";
 import { useAuth } from "@/providers/AuthProvider";
-import { signOut } from "@/lib/firebase/auth";
+import { signOut, changePassword } from "@/lib/firebase/auth";
 import { getUserOrders, getUserCommissions } from "@/lib/firebase/firestore";
 import type { Order, Commission } from "@/types";
 
@@ -31,9 +33,17 @@ export default function ProfilePage() {
 function ProfileContent() {
   const { user, profile, viewMode, setViewMode } = useAuth();
   const router = useRouter();
+  const toast = useToast();
   const [orders, setOrders] = useState<Order[]>([]);
   const [commissions, setCommissions] = useState<Commission[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Password change state
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     async function fetchUserData() {
@@ -57,6 +67,39 @@ function ProfileContent() {
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordErrors({});
+
+    const errors: Record<string, string> = {};
+    if (!currentPassword) errors.currentPassword = "Current password is required";
+    if (!newPassword) errors.newPassword = "New password is required";
+    if (newPassword.length < 6) errors.newPassword = "Password must be at least 6 characters";
+    if (newPassword !== confirmNewPassword) errors.confirmNewPassword = "Passwords do not match";
+    if (Object.keys(errors).length > 0) {
+      setPasswordErrors(errors);
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      await changePassword(currentPassword, newPassword);
+      toast.success("Password updated successfully!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update password";
+      if (message.includes("wrong-password") || message.includes("invalid-credential")) {
+        setPasswordErrors({ currentPassword: "Current password is incorrect" });
+      } else {
+        toast.error("Failed to update password. Please try again.");
+      }
+    } finally {
+      setPasswordLoading(false);
+    }
   };
 
   return (
@@ -185,6 +228,51 @@ function ProfileContent() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Change Password section */}
+        <div className="mt-12">
+          <div className="flex items-center gap-2 mb-4">
+            <Lock className="w-5 h-5 text-primary" aria-hidden="true" />
+            <h2 className="text-xl font-bold text-accent">Change Password</h2>
+          </div>
+
+          <form
+            onSubmit={handleChangePassword}
+            className="bg-white border border-gray-100 rounded-xl p-6 max-w-md space-y-4"
+          >
+            <Input
+              label="Current Password"
+              type="password"
+              placeholder="Enter current password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              error={passwordErrors.currentPassword}
+              required
+            />
+            <Input
+              label="New Password"
+              type="password"
+              placeholder="Enter new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              error={passwordErrors.newPassword}
+              required
+            />
+            <Input
+              label="Confirm New Password"
+              type="password"
+              placeholder="Confirm new password"
+              value={confirmNewPassword}
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
+              error={passwordErrors.confirmNewPassword}
+              required
+            />
+            <Button type="submit" loading={passwordLoading}>
+              <Lock className="w-4 h-4 mr-2" aria-hidden="true" />
+              Update Password
+            </Button>
+          </form>
         </div>
       </Container>
     </section>

@@ -33,38 +33,33 @@ export async function getArtworks(category?: string): Promise<Artwork[]> {
   if (category && category !== "All") {
     q = query(
       collection(db, "artworks"),
-      where("archived", "!=", true),
       where("category", "==", category),
       orderBy("createdAt", "desc")
     );
   } else {
     q = query(
       collection(db, "artworks"),
-      where("archived", "!=", true),
       orderBy("createdAt", "desc")
     );
   }
 
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Artwork[];
+  return snapshot.docs
+    .map((doc) => ({ id: doc.id, ...doc.data() }) as Artwork)
+    .filter((a) => a.archived !== true);
 }
 
 /** Fetch featured artworks for the home page (excludes archived) */
 export async function getFeaturedArtworks(): Promise<Artwork[]> {
   const q = query(
     collection(db, "artworks"),
-    where("archived", "!=", true),
     where("isFeatured", "==", true),
     limit(6)
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Artwork[];
+  return snapshot.docs
+    .map((doc) => ({ id: doc.id, ...doc.data() }) as Artwork)
+    .filter((a) => a.archived !== true);
 }
 
 /** Fetch a single artwork by its document ID */

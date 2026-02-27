@@ -15,8 +15,11 @@ export default function NotFound() {
           <h1 className="text-2xl font-bold text-accent mb-2">
             Page Not Found
           </h1>
-          <p className="text-muted mb-8">
+          <p className="text-muted mb-2">
             The page you are looking for does not exist or has been moved.
+          </p>
+          <p className="text-sm italic text-primary/70 mb-8">
+            &ldquo;Not all who wander are lost — but this page definitely is!&rdquo;
           </p>
           <Link href="/">
             <Button>

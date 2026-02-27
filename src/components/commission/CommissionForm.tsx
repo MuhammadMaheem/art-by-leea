@@ -13,13 +13,13 @@ import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import { useAuth } from "@/providers/AuthProvider";
-import { uploadImage } from "@/lib/firebase/storage";
 import { db } from "@/lib/firebase/client";
 import { ART_CATEGORIES, BUDGET_RANGES } from "@/utils/constants";
 
 export default function CommissionForm() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, profile } = useAuth();
   const toast = useToast();
+  const isAdminAsCustomer = profile?.role === "admin" && !isAdmin;
 
   // Dynamic config from Firestore (falls back to constants)
   const [categories, setCategories] = useState<string[]>([...ART_CATEGORIES.filter((c) => c !== "All")]);
@@ -107,15 +107,32 @@ export default function CommissionForm() {
   // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (isAdminAsCustomer) {
+      toast.error("You're the artist! You can't commission yourself.");
+      return;
+    }
     if (!validate()) return;
 
     setLoading(true);
     try {
-      // Step 1: Upload reference images to Firebase Storage
+      // Step 1: Upload reference images to Vercel Blob
       const imageUrls: string[] = [];
       for (const file of files) {
-        const path = `commission-images/${user?.uid || "anonymous"}`;
-        const url = await uploadImage(file, path);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', `commission-images/${user?.uid || "anonymous"}`);
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Upload failed');
+        }
+
+        const { url } = await response.json();
         imageUrls.push(url);
       }
 
@@ -325,7 +342,7 @@ export default function CommissionForm() {
       </div>
 
       {/* Submit button */}
-      <Button type="submit" loading={loading} disabled={isAdmin} size="lg" className="w-full">
+      <Button type="submit" loading={loading} disabled={isAdmin || isAdminAsCustomer} size="lg" className="w-full">
         <Send className="w-5 h-5 mr-2" aria-hidden="true" />
         {isAdmin ? "Admin Cannot Submit" : "Submit Commission Request"}
       </Button>

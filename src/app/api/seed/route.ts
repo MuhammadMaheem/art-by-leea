@@ -20,9 +20,9 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Simple secret protection
-    const secret = process.env.SEED_SECRET || "seed-me";
-    if (body.secret !== secret) {
+    // Simple secret protection — SEED_SECRET must be set in production
+    const secret = process.env.SEED_SECRET;
+    if (!secret || body.secret !== secret) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     if (!configSnap.exists) {
       await configRef.set({
         categories: ["Painting", "Digital", "Sculpture", "Mixed Media", "Photography"],
-        budgetRanges: ["Under $100", "$100 – $300", "$300 – $500", "$500 – $1,000", "$1,000 – $2,500", "$2,500+"],
+        budgetRanges: ["Under Rs. 10,000", "Rs. 10,000 – Rs. 30,000", "Rs. 30,000 – Rs. 50,000", "Rs. 50,000 – Rs. 100,000", "Rs. 100,000 – Rs. 250,000", "Rs. 250,000+"],
         updatedAt: new Date(),
       });
     }

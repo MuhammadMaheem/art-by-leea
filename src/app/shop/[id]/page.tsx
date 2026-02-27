@@ -28,7 +28,8 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore((s) => s.addItem);
   const toast = useToast();
-  const { isAdmin } = useAuth();
+  const { isAdmin, profile } = useAuth();
+  const isAdminAsCustomer = profile?.role === "admin" && !isAdmin;
 
   const id = params.id as string;
 
@@ -48,12 +49,20 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!artwork) return;
+    if (isAdminAsCustomer) {
+      toast.error("You're the artist! You can't buy your own masterpieces.");
+      return;
+    }
     addItem(artwork);
     toast.success(`"${artwork.title}" added to cart!`);
   };
 
   const handleBuyNow = () => {
     if (!artwork) return;
+    if (isAdminAsCustomer) {
+      toast.error("You're the artist! You can't buy your own masterpieces.");
+      return;
+    }
     addItem(artwork);
     router.push("/cart");
   };

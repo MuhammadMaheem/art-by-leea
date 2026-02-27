@@ -7,23 +7,38 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, ShieldAlert } from "lucide-react";
 import Container from "@/components/layout/Container";
 import CartItemComponent from "@/components/cart/CartItem";
 import CartSummary from "@/components/cart/CartSummary";
 import Button from "@/components/ui/Button";
 import { useCartStore } from "@/stores/cartStore";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
+  const { isAdmin } = useAuth();
 
   return (
     <section className="py-12 md:py-16">
       <Container>
-        <h1 className="text-3xl md:text-4xl font-bold text-accent mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-accent mb-2">
           Shopping Cart
         </h1>
+        <p className="text-sm italic text-primary/70 mb-8">
+          &ldquo;Art is the only way to run away without leaving home.&rdquo; — Twyla Tharp
+        </p>
+
+        {/* Admin warning banner */}
+        {isAdmin && (
+          <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 p-4 flex items-center gap-3">
+            <ShieldAlert className="w-5 h-5 text-yellow-600 shrink-0" aria-hidden="true" />
+            <p className="text-sm text-yellow-800">
+              You are in <strong>Admin mode</strong>. Purchasing is disabled. Switch to Customer mode in your profile to shop.
+            </p>
+          </div>
+        )}
 
         {items.length === 0 ? (
           /* Empty cart state */

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Loader2, Plus, Pencil, Archive } from "lucide-react";
-import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/Toast";
 import { formatPrice } from "@/utils/formatPrice";

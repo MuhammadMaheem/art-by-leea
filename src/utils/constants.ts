@@ -5,7 +5,7 @@
  * navigation links, or modify product categories from a single file.
  */
 
-export const SITE_NAME = "Artisan Gallery";
+export const SITE_NAME = "Art By Leena";
 export const SITE_DESCRIPTION =
   "Original art pieces and custom commissions crafted with passion.";
 
@@ -37,12 +37,12 @@ export const SORT_OPTIONS = [
 
 /** Budget ranges for the commission form */
 export const BUDGET_RANGES = [
-  "Under $100",
-  "$100 – $300",
-  "$300 – $500",
-  "$500 – $1,000",
-  "$1,000 – $2,500",
-  "$2,500+",
+  "Under Rs. 10,000",
+  "Rs. 10,000 – Rs. 30,000",
+  "Rs. 30,000 – Rs. 50,000",
+  "Rs. 50,000 – Rs. 100,000",
+  "Rs. 100,000 – Rs. 250,000",
+  "Rs. 250,000+",
 ] as const;
 
 /** Commission/Order status flow */
@@ -55,6 +55,7 @@ export const COMMISSION_STATUSES = [
 
 export const ORDER_STATUSES = [
   "pending",
+  "pending_verification",
   "paid",
   "shipped",
   "delivered",

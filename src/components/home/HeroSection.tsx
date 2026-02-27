@@ -35,10 +35,14 @@ export default function HeroSection() {
           </h1>
 
           {/* Description */}
-          <p className="text-lg md:text-xl text-muted max-w-2xl mb-8 leading-relaxed">
+          <p className="text-lg md:text-xl text-muted max-w-2xl mb-4 leading-relaxed">
             Browse our curated collection of original paintings, digital
             art, and sculptures — or commission a custom piece tailored
             to your vision.
+          </p>
+
+          <p className="text-sm italic text-primary/70 mb-8">
+            &ldquo;Every canvas is a journey all its own.&rdquo; — Helen Frankenthaler
           </p>
 
           {/* CTA Buttons */}

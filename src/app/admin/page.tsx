@@ -109,7 +109,7 @@ export default function AdminDashboardPage() {
     },
     {
       label: "Revenue",
-      value: `$${(metrics?.revenue ?? 0).toFixed(2)}`,
+      value: `Rs. ${(metrics?.revenue ?? 0).toFixed(0)}`,
       icon: DollarSign,
       color: "text-green-600 bg-green-100",
     },

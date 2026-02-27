@@ -22,6 +22,9 @@ export default function LoginPage() {
               Welcome Back
             </h1>
             <p className="text-muted">Sign in to your account</p>
+            <p className="text-xs italic text-primary/70 mt-1">
+              &ldquo;Art enables us to find ourselves and lose ourselves at the same time.&rdquo;
+            </p>
           </div>
 
           {/* Form card */}

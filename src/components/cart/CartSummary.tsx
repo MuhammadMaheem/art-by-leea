@@ -5,7 +5,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Tag, X } from "lucide-react";
+import { Tag, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { formatPrice } from "@/utils/formatPrice";
@@ -17,10 +17,10 @@ export default function CartSummary() {
   const totalPrice = useCartStore((s) => s.totalPrice);
   const totalItems = useCartStore((s) => s.totalItems);
   const items = useCartStore((s) => s.items);
-  const { user } = useAuth();
+  const { user, isAdmin, profile } = useAuth();
   const router = useRouter();
   const toast = useToast();
-  const [loading, setLoading] = useState(false);
+  const isAdminAsCustomer = profile?.role === "admin" && !isAdmin;
 
   // Promo code state
   const [promoInput, setPromoInput] = useState("");
@@ -58,57 +58,28 @@ export default function CartSummary() {
     setPromoError("");
   };
 
-  const handleCheckout = async () => {
-    // Must be logged in to checkout
+  const handleCheckout = () => {
     if (!user) {
       toast.error("Please sign in to continue checkout.");
       router.push("/auth/login");
       return;
     }
 
-    setLoading(true);
-    try {
-      // Call our API route to create a Stripe checkout session
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: items.map((item) => ({
-            id: item.id,
-            title: item.title,
-            price: item.price,
-            quantity: item.quantity,
-            imageUrl: item.imageUrl,
-          })),
-          userId: user.uid,
-          userEmail: user.email,
-          promoCode: appliedPromo?.code || null,
-          discountPercent: appliedPromo?.discountPercent || 0,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session");
-      }
-
-      // Redirect to Stripe's hosted checkout page
-      window.location.href = data.url;
-    } catch (error) {
-      console.error("Checkout error:", error);
-      toast.error("Checkout failed. Please try again.");
-    } finally {
-      setLoading(false);
+    // Store promo info in sessionStorage for the checkout page
+    if (appliedPromo) {
+      sessionStorage.setItem("promoCode", appliedPromo.code);
+      sessionStorage.setItem("discountPercent", String(appliedPromo.discountPercent));
+    } else {
+      sessionStorage.removeItem("promoCode");
+      sessionStorage.removeItem("discountPercent");
     }
+
+    router.push("/checkout");
   };
 
   const subtotal = totalPrice();
   const discount = appliedPromo ? subtotal * (appliedPromo.discountPercent / 100) : 0;
-  const afterDiscount = subtotal - discount;
-  // Simple tax calculation (for display only — Stripe handles actual tax)
-  const estimatedTax = afterDiscount * 0.08;
-  const total = afterDiscount + estimatedTax;
+  const total = subtotal - discount;
 
   return (
     <div className="bg-secondary/50 rounded-xl p-6 sticky top-24">
@@ -121,12 +92,6 @@ export default function CartSummary() {
           </span>
           <span className="text-accent font-medium">
             {formatPrice(subtotal)}
-          </span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-muted">Estimated Tax</span>
-          <span className="text-accent font-medium">
-            {formatPrice(estimatedTax)}
           </span>
         </div>
         <div className="flex justify-between text-sm">
@@ -193,19 +158,12 @@ export default function CartSummary() {
 
       <Button
         onClick={handleCheckout}
-        loading={loading}
-        disabled={items.length === 0}
+        disabled={items.length === 0 || isAdmin || isAdminAsCustomer}
         className="w-full"
         size="lg"
       >
-        {loading ? "Processing..." : "Proceed to Checkout"}
+        {isAdmin || isAdminAsCustomer ? "Purchasing Disabled (Admin)" : "Proceed to Checkout"}
       </Button>
-
-      {/* Trust badge */}
-      <div className="flex items-center justify-center gap-2 mt-4 text-xs text-muted">
-        <ShieldCheck className="w-4 h-4" aria-hidden="true" />
-        <span>Secure checkout powered by Stripe</span>
-      </div>
     </div>
   );
 }

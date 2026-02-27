@@ -9,7 +9,7 @@
  * this module is imported from multiple components.
  */
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, browserSessionPersistence, setPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -28,6 +28,10 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
 // Export the services for use throughout the browser-side app
 export const auth = getAuth(app);
+
+// Session persistence — user is logged out when the browser tab closes
+setPersistence(auth, browserSessionPersistence);
+
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export default app;

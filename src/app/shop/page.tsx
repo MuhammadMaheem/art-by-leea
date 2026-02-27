@@ -73,6 +73,9 @@ export default function ShopPage() {
           <p className="text-muted text-lg">
             Browse our collection of original artworks.
           </p>
+          <p className="text-sm italic text-primary/70 mt-2">
+            &ldquo;Art is not what you see, but what you make others see.&rdquo; — Edgar Degas
+          </p>
         </div>
 
         {/* Filter controls */}

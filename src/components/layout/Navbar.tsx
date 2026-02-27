@@ -10,6 +10,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, ShoppingCart, User, LogIn, MessageCircle, Bell } from "lucide-react";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { NAV_LINKS, SITE_NAME } from "@/utils/constants";
@@ -28,6 +29,7 @@ export default function Navbar() {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   // Subscribe to unread message count
   useEffect(() => {
@@ -75,7 +77,9 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-4 py-2 text-accent hover:text-primary rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center cursor-pointer"
+                className={`px-4 py-2 rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center cursor-pointer ${
+                  pathname === link.href ? "text-primary font-medium" : "text-accent hover:text-primary"
+                }`}
               >
                 {link.label}
               </Link>
@@ -85,9 +89,11 @@ export default function Navbar() {
             {isAdmin && (
               <Link
                 href="/admin"
-                className="px-4 py-2 text-primary-dark hover:text-primary rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center cursor-pointer font-medium"
+                className={`px-4 py-2 rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center cursor-pointer font-medium ${
+                  pathname.startsWith("/admin") ? "text-primary" : "text-primary-dark hover:text-primary"
+                }`}
               >
-                Admin
+                Dashboard
               </Link>
             )}
 
@@ -95,7 +101,9 @@ export default function Navbar() {
             {user && (
               <Link
                 href={isAdmin ? "/admin/messages" : "/messages"}
-                className="relative px-4 py-2 text-accent hover:text-primary rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center gap-1.5 cursor-pointer"
+                className={`relative px-4 py-2 rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center gap-1.5 cursor-pointer ${
+                  pathname === (isAdmin ? "/admin/messages" : "/messages") ? "text-primary font-medium" : "text-accent hover:text-primary"
+                }`}
               >
                 <MessageCircle className="w-4 h-4" aria-hidden="true" />
                 Messages
@@ -162,19 +170,21 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Cart icon with badge */}
-            <Link
-              href="/cart"
-              className="relative p-2 rounded-lg hover:bg-secondary transition-colors min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
-              aria-label={`Shopping cart with ${totalItems()} items`}
-            >
-              <ShoppingCart className="w-5 h-5 text-accent" aria-hidden="true" />
-              {totalItems() > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-primary text-accent text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {totalItems()}
-                </span>
-              )}
-            </Link>
+            {/* Cart icon with badge — hidden for admin in admin mode */}
+            {!isAdmin && (
+              <Link
+                href="/cart"
+                className="relative p-2 rounded-lg hover:bg-secondary transition-colors min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
+                aria-label={`Shopping cart with ${totalItems()} items`}
+              >
+                <ShoppingCart className="w-5 h-5 text-accent" aria-hidden="true" />
+                {totalItems() > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 bg-primary text-accent text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {totalItems()}
+                  </span>
+                )}
+              </Link>
+            )}
 
             {/* Desktop auth buttons (hidden on mobile) */}
             <div className="hidden md:flex items-center gap-2">

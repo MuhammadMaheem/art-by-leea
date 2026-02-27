@@ -44,6 +44,9 @@ export default function CommissionPage() {
             Have a unique vision? Let us bring it to life. Fill out the form
             below and we&apos;ll get back to you within 48 hours.
           </p>
+          <p className="text-sm italic text-primary/70 mt-3">
+            &ldquo;Creativity takes courage.&rdquo; — Henri Matisse
+          </p>
         </div>
 
         {/* How it works — 4-step process */}

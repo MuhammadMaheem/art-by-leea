@@ -41,6 +41,9 @@ export default function ServicesOverview() {
             From ready-made masterpieces to fully custom creations, we&apos;ve got
             you covered.
           </p>
+          <p className="text-sm italic text-primary/70 mt-2">
+            &ldquo;The purpose of art is washing the dust of daily life off our souls.&rdquo; — Pablo Picasso
+          </p>
         </div>
 
         {/* Services grid */}

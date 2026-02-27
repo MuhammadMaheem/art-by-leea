@@ -22,6 +22,9 @@ export default function SignupPage() {
               Create Account
             </h1>
             <p className="text-muted">Join to start collecting art</p>
+            <p className="text-xs italic text-primary/70 mt-1">
+              &ldquo;Every artist was first an amateur.&rdquo; — Ralph Waldo Emerson
+            </p>
           </div>
 
           {/* Form card */}

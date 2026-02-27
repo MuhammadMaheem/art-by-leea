@@ -3,10 +3,10 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import Image from "next/image";
 import { Upload, Loader2 } from "lucide-react";
+import imageCompression from 'browser-image-compression';
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
-import { uploadImage } from "@/lib/firebase/storage";
 import { auth } from "@/lib/firebase/client";
 import { ART_CATEGORIES } from "@/utils/constants";
 import { cn } from "@/utils/cn";
@@ -31,6 +31,7 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
   const [inStock, setInStock] = useState(artwork?.inStock !== false);
   const [imageUrl, setImageUrl] = useState(artwork?.imageUrl || "");
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,13 +48,38 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
     }
 
     setUploading(true);
+    setProgress(0);
     try {
-      const url = await uploadImage(file, "artwork-images");
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1, // Max 1MB
+        maxWidthOrHeight: 1920, // Max dimension
+        useWebWorker: true,
+        onProgress: (p) => setProgress(Math.round(p)),
+      });
+
+      const formData = new FormData();
+      formData.append('file', compressedFile);
+      formData.append('folder', 'artwork-images');
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Upload failed');
+      }
+
+      const { url } = await response.json();
       setImageUrl(url);
-    } catch {
-      toast.error("Failed to upload image.");
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error("Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
+      setProgress(0);
     }
   };
 
@@ -66,7 +92,7 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
     }
 
     if (Number(price) < 1) {
-      toast.error("Price must be at least $1.");
+      toast.error("Price must be at least Rs. 1.");
       return;
     }
 
@@ -147,7 +173,7 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
-          label="Price (USD)"
+          label="Price (PKR)"
           type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
@@ -194,40 +220,40 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
       {/* Toggles */}
       <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-3 cursor-pointer">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={isFeatured}
-            onClick={() => setIsFeatured(!isFeatured)}
-            className={cn(
-              "relative w-12 h-6 rounded-full transition-colors duration-200",
-              isFeatured ? "bg-primary" : "bg-gray-300"
-            )}
-          >
+          <input
+            type="checkbox"
+            checked={isFeatured}
+            onChange={() => setIsFeatured(!isFeatured)}
+            className="sr-only peer"
+          />
+          <span className={cn(
+            "relative w-12 h-6 rounded-full transition-colors duration-200",
+            isFeatured ? "bg-primary" : "bg-gray-300"
+          )}>
             <span className={cn(
               "absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200",
               isFeatured ? "translate-x-7" : "translate-x-1"
             )} />
-          </button>
+          </span>
           <span className="text-sm font-medium text-accent">Show on homepage</span>
         </label>
 
         <label className="flex items-center gap-3 cursor-pointer">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={inStock}
-            onClick={() => setInStock(!inStock)}
-            className={cn(
-              "relative w-12 h-6 rounded-full transition-colors duration-200",
-              inStock ? "bg-primary" : "bg-gray-300"
-            )}
-          >
+          <input
+            type="checkbox"
+            checked={inStock}
+            onChange={() => setInStock(!inStock)}
+            className="sr-only peer"
+          />
+          <span className={cn(
+            "relative w-12 h-6 rounded-full transition-colors duration-200",
+            inStock ? "bg-primary" : "bg-gray-300"
+          )}>
             <span className={cn(
               "absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200",
               inStock ? "translate-x-7" : "translate-x-1"
             )} />
-          </button>
+          </span>
           <span className="text-sm font-medium text-accent">Available for purchase</span>
         </label>
       </div>
@@ -252,11 +278,16 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
               : "bg-secondary text-accent hover:bg-gray-200"
           )}>
             {uploading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Uploading... {progress > 0 && `${progress}%`}
+              </>
             ) : (
-              <Upload className="w-4 h-4" />
+              <>
+                <Upload className="w-4 h-4" />
+                {imageUrl ? "Change Image" : "Upload Image"}
+              </>
             )}
-            {uploading ? "Uploading..." : imageUrl ? "Change Image" : "Upload Image"}
             <input
               type="file"
               accept="image/*"
@@ -268,7 +299,7 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
         </div>
       </div>
 
-      <Button type="submit" loading={submitting} size="lg" className="w-full sm:w-auto">
+      <Button type="submit" loading={submitting} disabled={uploading} size="lg" className="w-full sm:w-auto">
         {isEdit ? "Save Changes" : "Create Artwork"}
       </Button>
     </form>

@@ -1,12 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* Allow images from Firebase Storage and placeholder services */
+  output: "standalone",
+  /* Allow images from Vercel Blob and other services */
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "firebasestorage.googleapis.com",
+        hostname: "*.vercel-storage.com",
       },
+      // Keep existing patterns for Unsplash, etc.
       {
         protocol: "https",
         hostname: "images.unsplash.com",
@@ -14,6 +16,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "via.placeholder.com",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
       },
     ],
   },

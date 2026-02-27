@@ -5,11 +5,16 @@ import { Plus, X, Loader2 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import { auth } from "@/lib/firebase/client";
+import { ART_CATEGORIES, BUDGET_RANGES } from "@/utils/constants";
+
+const DEFAULT_CATEGORIES = ART_CATEGORIES.filter((c) => c !== "All") as unknown as string[];
+const DEFAULT_BUDGET_RANGES = [...BUDGET_RANGES] as unknown as string[];
 
 export default function AdminSettingsPage() {
   const toast = useToast();
   const [categories, setCategories] = useState<string[]>([]);
   const [budgetRanges, setBudgetRanges] = useState<string[]>([]);
+  const [easypaisaNumber, setEasypaisaNumber] = useState("03404677899");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dupError, setDupError] = useState<{ section: string; index: number } | null>(null);
@@ -20,8 +25,13 @@ export default function AdminSettingsPage() {
         const res = await fetch("/api/admin/settings");
         const data = await res.json();
         if (data.config) {
-          setCategories(data.config.categories || []);
-          setBudgetRanges(data.config.budgetRanges || []);
+          setCategories(data.config.categories?.length ? data.config.categories : DEFAULT_CATEGORIES);
+          setBudgetRanges(data.config.budgetRanges?.length ? data.config.budgetRanges : DEFAULT_BUDGET_RANGES);
+          setEasypaisaNumber(data.config.easypaisaNumber || "03404677899");
+        } else {
+          // No config saved yet — use defaults
+          setCategories(DEFAULT_CATEGORIES);
+          setBudgetRanges(DEFAULT_BUDGET_RANGES);
         }
       } catch {
         toast.error("Failed to load settings.");
@@ -66,7 +76,7 @@ export default function AdminSettingsPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ categories: cleanCats, budgetRanges: cleanRanges }),
+        body: JSON.stringify({ categories: cleanCats, budgetRanges: cleanRanges, easypaisaNumber }),
       });
 
       if (res.ok) {
@@ -94,6 +104,21 @@ export default function AdminSettingsPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-accent mb-6">Commission Form Settings</h1>
+
+      {/* Easypaisa Number */}
+      <div className="mb-8">
+        <h3 className="text-lg font-semibold text-accent mb-3">Easypaisa Payment Number</h3>
+        <p className="text-sm text-muted mb-2">
+          Customers will send payments to this number during checkout.
+        </p>
+        <input
+          type="text"
+          value={easypaisaNumber}
+          onChange={(e) => setEasypaisaNumber(e.target.value)}
+          className="w-full max-w-xs px-3 py-2 rounded-lg border border-gray-300 text-sm text-accent focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="03XXXXXXXXX"
+        />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {/* Categories */}

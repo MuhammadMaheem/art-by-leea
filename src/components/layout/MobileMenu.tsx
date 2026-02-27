@@ -9,6 +9,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { X, ShoppingCart, User, LogIn, LogOut, MessageCircle } from "lucide-react";
 import { NAV_LINKS } from "@/utils/constants";
 import { useAuth } from "@/providers/AuthProvider";
@@ -23,6 +24,7 @@ interface MobileMenuProps {
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const { user, isAdmin } = useAuth();
   const totalItems = useCartStore((s) => s.totalItems);
+  const pathname = usePathname();
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -76,35 +78,41 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               key={link.href}
               href={link.href}
               onClick={onClose}
-              className="flex items-center px-6 py-3 text-accent hover:bg-primary-light transition-colors min-h-touch cursor-pointer"
+              className={`flex items-center px-6 py-3 transition-colors min-h-touch cursor-pointer ${
+                pathname === link.href ? "bg-primary-light text-primary font-medium" : "text-accent hover:bg-primary-light"
+              }`}
             >
               {link.label}
             </Link>
           ))}
 
-          {/* Cart link */}
-          <Link
-            href="/cart"
-            onClick={onClose}
-            className="flex items-center gap-3 px-6 py-3 text-accent hover:bg-primary-light transition-colors min-h-touch cursor-pointer"
-          >
-            <ShoppingCart className="w-5 h-5" aria-hidden="true" />
-            <span>Cart</span>
-            {totalItems() > 0 && (
-              <span className="ml-auto bg-primary text-accent text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
-                {totalItems()}
-              </span>
-            )}
-          </Link>
+          {/* Cart link — hidden for admin in admin mode */}
+          {!isAdmin && (
+            <Link
+              href="/cart"
+              onClick={onClose}
+              className="flex items-center gap-3 px-6 py-3 text-accent hover:bg-primary-light transition-colors min-h-touch cursor-pointer"
+            >
+              <ShoppingCart className="w-5 h-5" aria-hidden="true" />
+              <span>Cart</span>
+              {totalItems() > 0 && (
+                <span className="ml-auto bg-primary text-accent text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                  {totalItems()}
+                </span>
+              )}
+            </Link>
+          )}
 
           {/* Admin link (if admin user) */}
           {isAdmin && (
             <Link
               href="/admin"
               onClick={onClose}
-              className="flex items-center gap-3 px-6 py-3 text-primary-dark hover:bg-primary-light transition-colors min-h-touch cursor-pointer font-medium"
+              className={`flex items-center gap-3 px-6 py-3 transition-colors min-h-touch cursor-pointer font-medium ${
+                pathname.startsWith("/admin") ? "bg-primary-light text-primary" : "text-primary-dark hover:bg-primary-light"
+              }`}
             >
-              Admin Dashboard
+              Dashboard
             </Link>
           )}
 
@@ -113,7 +121,9 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             <Link
               href={isAdmin ? "/admin/messages" : "/messages"}
               onClick={onClose}
-              className="flex items-center gap-3 px-6 py-3 text-accent hover:bg-primary-light transition-colors min-h-touch cursor-pointer"
+              className={`flex items-center gap-3 px-6 py-3 transition-colors min-h-touch cursor-pointer ${
+                pathname === (isAdmin ? "/admin/messages" : "/messages") ? "bg-primary-light text-primary font-medium" : "text-accent hover:bg-primary-light"
+              }`}
             >
               <MessageCircle className="w-5 h-5" aria-hidden="true" />
               <span>Messages</span>

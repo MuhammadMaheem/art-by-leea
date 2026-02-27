@@ -36,7 +36,7 @@ export async function sendOrderConfirmation(params: {
   const itemsHtml = items
     .map(
       (item) =>
-        `<li>${item.title} × ${item.quantity} — $${item.price.toFixed(2)}</li>`
+        `<li>${item.title} × ${item.quantity} — Rs. ${item.price.toFixed(0)}</li>`
     )
     .join("");
 
@@ -49,10 +49,10 @@ export async function sendOrderConfirmation(params: {
         <h1 style="color: #B57EDC;">Thank you for your order!</h1>
         <p>Your order <strong>#${orderId.slice(0, 8)}</strong> has been confirmed.</p>
         <ul>${itemsHtml}</ul>
-        <p>Total: <strong>$${total.toFixed(2)}</strong></p>
+        <p>Total: <strong>Rs. ${total.toFixed(0)}</strong></p>
         <p>We'll notify you when your artwork ships.</p>
         <hr style="border: 1px solid #E6E6FA; margin: 24px 0;" />
-        <p style="color: #6B7280; font-size: 14px;">Artisan Gallery</p>
+        <p style="color: #6B7280; font-size: 14px;">Art By Leena</p>
       </div>
     `,
   });
@@ -87,7 +87,7 @@ export async function sendCommissionNotification(params: {
         </p>
         <p>Log in to your admin dashboard to view the full request.</p>
         <hr style="border: 1px solid #E6E6FA; margin: 24px 0;" />
-        <p style="color: #6B7280; font-size: 14px;">Artisan Gallery Admin</p>
+        <p style="color: #6B7280; font-size: 14px;">Art By Leena Admin</p>
       </div>
     `,
   });
@@ -121,7 +121,48 @@ export async function sendCommissionStatusUpdate(params: {
         has been updated to: <strong>${statusLabel}</strong></p>
         <p>Log in to your account to view details.</p>
         <hr style="border: 1px solid #E6E6FA; margin: 24px 0;" />
-        <p style="color: #6B7280; font-size: 14px;">Artisan Gallery</p>
+        <p style="color: #6B7280; font-size: 14px;">Art By Leena</p>
+      </div>
+    `,
+  });
+}
+
+/**
+ * Send the order receipt screenshot to the admin for manual verification.
+ */
+export async function sendOrderReceiptToAdmin(params: {
+  orderId: string;
+  userEmail: string;
+  receiptImageUrl: string;
+  items: Array<{ title: string; price: number; quantity: number }>;
+  total: number;
+}) {
+  const { orderId, userEmail, receiptImageUrl, items, total } = params;
+  const itemsHtml = items
+    .map(
+      (item) =>
+        `<li>${item.title} × ${item.quantity} — Rs. ${item.price.toFixed(0)}</li>`
+    )
+    .join("");
+
+  await getResend().emails.send({
+    from: FROM_EMAIL,
+    to: ADMIN_EMAIL,
+    subject: `New Order #${orderId.slice(0, 8)} — Payment Verification Needed`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #B57EDC;">New Order — Verify Payment</h1>
+        <p><strong>Order ID:</strong> #${orderId.slice(0, 8)}</p>
+        <p><strong>Customer:</strong> ${userEmail}</p>
+        <h3>Items:</h3>
+        <ul>${itemsHtml}</ul>
+        <p><strong>Total: Rs. ${total.toFixed(0)}</strong></p>
+        <h3>Payment Receipt:</h3>
+        <p><a href="${receiptImageUrl}" style="color: #B57EDC;">View Receipt Screenshot</a></p>
+        <img src="${receiptImageUrl}" alt="Payment receipt" style="max-width: 100%; border-radius: 8px; margin-top: 8px;" />
+        <p style="margin-top: 16px;">Log in to the admin dashboard to approve or reject this order.</p>
+        <hr style="border: 1px solid #E6E6FA; margin: 24px 0;" />
+        <p style="color: #6B7280; font-size: 14px;">Art By Leena Admin</p>
       </div>
     `,
   });

@@ -23,12 +23,17 @@ interface ArtworkCardProps {
 export default function ArtworkCard({ artwork }: ArtworkCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const toast = useToast();
-  const { isAdmin } = useAuth();
+  const { isAdmin, profile } = useAuth();
+  const isAdminAsCustomer = profile?.role === "admin" && !isAdmin;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     // Prevent the Link navigation when clicking the button
     e.preventDefault();
     e.stopPropagation();
+    if (isAdminAsCustomer) {
+      toast.error("You're the artist! You can't buy your own masterpieces.");
+      return;
+    }
     addItem(artwork);
     toast.success(`"${artwork.title}" added to cart!`);
   };

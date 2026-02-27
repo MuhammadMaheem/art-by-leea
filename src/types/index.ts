@@ -12,7 +12,7 @@ export interface Artwork {
   id: string;
   title: string;
   description: string;
-  price: number; // in USD
+  price: number; // in PKR
   category: "Painting" | "Digital" | "Sculpture" | "Mixed Media" | "Photography";
   imageUrl: string;
   dimensions: string; // e.g., "24 × 36 inches"
@@ -28,15 +28,17 @@ export interface CartItem extends Artwork {
   quantity: number;
 }
 
-/** ── Order (created after Stripe checkout succeeds) ── */
+/** ── Order (created after checkout) ── */
 export interface Order {
   id: string;
   userId: string;
   userEmail: string;
   items: OrderItem[];
   total: number;
-  status: "pending" | "paid" | "shipped" | "delivered" | "cancelled";
-  stripeSessionId: string;
+  status: "pending" | "pending_verification" | "paid" | "shipped" | "delivered" | "cancelled";
+  receiptImageUrl?: string;
+  easypaisaNumber?: string;
+  stripeSessionId?: string;
   promoCode?: string;
   discountAmount?: number;
   createdAt: Timestamp | string;
@@ -79,6 +81,7 @@ export interface UserProfile {
 export interface CommissionConfig {
   categories: string[];
   budgetRanges: string[];
+  easypaisaNumber?: string;
   updatedAt: Timestamp | string;
 }
 

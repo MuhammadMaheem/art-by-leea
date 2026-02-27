@@ -7,11 +7,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { MessageCircle, Send } from "lucide-react";
 import AuthGuard from "@/components/auth/AuthGuard";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
 import MessageThread from "@/components/messages/MessageThread";
 import { db, auth } from "@/lib/firebase/client";
 import { useAuth } from "@/providers/AuthProvider";
@@ -25,11 +27,21 @@ export default function CustomerMessagesPage() {
 }
 
 function CustomerMessagesContent() {
-  const { user } = useAuth();
+  const { user, isAdmin, profile } = useAuth();
+  const router = useRouter();
+  const toast = useToast();
+  const isAdminAsCustomer = profile?.role === "admin" && !isAdmin;
   const [threadId, setThreadId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
+
+  // Redirect admin users to admin messages
+  useEffect(() => {
+    if (isAdmin) {
+      router.replace("/admin/messages");
+    }
+  }, [isAdmin, router]);
 
   // Listen for existing thread
   useEffect(() => {
@@ -52,6 +64,10 @@ function CustomerMessagesContent() {
 
   const handleStartConversation = async () => {
     if (!newMessage.trim() || sending) return;
+    if (isAdminAsCustomer) {
+      toast.error("You're the artist! You can't message yourself.");
+      return;
+    }
     setSending(true);
     try {
       const token = await auth.currentUser?.getIdToken();
@@ -86,12 +102,15 @@ function CustomerMessagesContent() {
   return (
     <section className="py-12 md:py-16">
       <Container>
-        <h1 className="text-2xl font-bold text-accent mb-6">Messages</h1>
+        <h1 className="text-2xl font-bold text-accent mb-2">Messages</h1>
+        <p className="text-sm italic text-primary/70 mb-6">
+          &ldquo;Art is a collaboration between God and the artist, and the less the artist does the better.&rdquo; — André Gide
+        </p>
 
         {threadId ? (
           <div className="border border-gray-200 rounded-xl bg-white h-[500px] flex flex-col">
             <div className="px-4 py-3 border-b border-gray-200">
-              <h2 className="font-semibold text-accent">Chat with Artisan Gallery</h2>
+              <h2 className="font-semibold text-accent">Chat with Art By Leena</h2>
             </div>
             <div className="flex-1 min-h-0">
               <MessageThread threadId={threadId} />
