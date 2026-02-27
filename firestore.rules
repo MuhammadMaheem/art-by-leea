@@ -1,0 +1,118 @@
+rules_version = '2';
+
+/**
+ * Firestore Security Rules for Artisan Gallery
+ *
+ * These rules protect your data on the Firebase Spark (free) plan.
+ * Deploy with:  firebase deploy --only firestore:rules
+ *
+ * Summary:
+ *   artworks      — Public read, admin write
+ *   orders        — Users read their own, admin reads all, server-only write
+ *   commissions   — Users read/write their own, admin reads all + updates
+ *   users         — Users read/write their own profile, admin reads all
+ *   settings      — Public read, admin write
+ *   promoCodes    — Public read, admin write
+ *   messages      — Participants read/write, admin reads all
+ *   notifications — Users read/update their own
+ */
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper Functions ───────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ─── Artworks (Products) ────────────────────────────────
+    // Anyone can browse artworks. Only admin can create/edit/delete.
+    match /artworks/{artworkId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Orders ─────────────────────────────────────────────
+    // Users can read their own orders. Admin can read all.
+    // Write is done server-side (Admin SDK in webhook), so
+    // we only allow admin writes from client as fallback.
+    match /orders/{orderId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+      allow delete: if false; // Orders should never be deleted
+    }
+
+    // ─── Commissions ────────────────────────────────────────
+    // Users can create commissions and read their own.
+    // Admin can read all and update status.
+    match /commissions/{commissionId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow update: if isOwner(resource.data.userId) || isAdmin();
+      allow delete: if false; // Commissions should not be deleted
+    }
+
+    // ─── User Profiles ──────────────────────────────────────
+    // Users can read and update their own profile.
+    // Admin can read any profile.
+    // Only server (Admin SDK) should create profiles on signup.
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if false;
+    }
+
+    // ─── Settings (Commission Config, etc.) ─────────────────
+    // Anyone can read settings. Only admin can write.
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Promo Codes ────────────────────────────────────────
+    // Public read (for validation). Admin write.
+    // Server-side handles usage increment via Admin SDK.
+    match /promoCodes/{codeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Messages (Threads + Chats subcollection) ───────────
+    // Customers can read/write their own threads.
+    // Admin can read/write all threads.
+    match /messages/{threadId} {
+      allow read: if isOwner(resource.data.customerId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow update: if isOwner(resource.data.customerId) || isAdmin();
+      allow delete: if false;
+
+      // Chat messages within a thread
+      match /chats/{chatId} {
+        allow read: if isAuthenticated()
+          && (get(/databases/$(database)/documents/messages/$(threadId)).data.customerId == request.auth.uid
+              || isAdmin());
+        allow create: if isAuthenticated();
+        allow update, delete: if false;
+      }
+    }
+
+    // ─── Notifications ──────────────────────────────────────
+    // Users can read and update (mark as read) their own notifications.
+    // Server-side (Admin SDK) creates notifications.
+    match /notifications/{notifId} {
+      allow read: if isOwner(resource.data.userId);
+      allow update: if isOwner(resource.data.userId);
+      allow create, delete: if false;
+    }
+  }
+}

@@ -1,0 +1,708 @@
+
+
+## WHO YOU ARE
+
+You are an expert full-stack developer specializing in Next.js 14, Firebase, Stripe, and Tailwind CSS. You write clean, production-ready code with zero unnecessary complexity. You never add libraries that aren't already in the project. You always follow existing patterns in the codebase before inventing new ones.
+
+---
+
+## THE PROJECT
+
+You are working on **Artisan Gallery** — a full-stack e-commerce art platform. Here is the exact stack:
+
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript (strict)
+- **Styling**: Tailwind CSS with a custom lavender palette (`primary: #B57EDC`, `primary-dark: #9B59B6`, `primary-light: #E6E6FA`, `accent: #1F2937`, `muted: #6B7280`)
+- **Database**: Firebase Firestore (Client SDK in components, Admin SDK in API routes only)
+- **Auth**: Firebase Authentication (email/password)
+- **Storage**: Firebase Storage
+- **Payments**: Stripe (hosted checkout + webhooks)
+- **Email**: Resend
+- **State**: Zustand with localStorage persistence
+- **Icons**: Lucide React
+- **Utilities**: `cn()` from `src/utils/cn.ts` (clsx + tailwind-merge)
+
+### Existing patterns you MUST follow
+
+- Use `cn()` for every className merge — never template literals with conditions
+- Use `Button`, `Input`, `Badge`, `Toast` UI primitives from `src/components/ui/`
+- Use `useToast()` for all success/error feedback
+- Use `AuthGuard` component with `requireAdmin` prop for protected pages
+- Use `getAdminDb()` from `src/lib/firebase/admin.ts` in ALL API routes that write to Firestore
+- Use `useAuth()` from `src/providers/AuthProvider.tsx` for user state in components
+- Use `auth.currentUser.getIdToken()` client-side and verify with `getAdminAuth().verifyIdToken(token)` server-side for all privileged API routes
+- Never import Firebase Admin in client components
+- All API errors return `{ error: string }` with the correct HTTP status code
+- All new types go in `src/types/index.ts`
+- All new constants go in `src/utils/constants.ts`
+
+### Deployment target
+
+**Vercel**. This means:
+- No WebSockets, no long-running servers
+- Real-time features use Firestore `onSnapshot` in client components only
+- No `fs` module in API routes
+- No service workers unless explicitly specified
+
+---
+
+## YOUR TASK
+
+Implement the following **7 feature groups** in order. After each group, the existing app must still work perfectly — do not break anything.
+
+---
+
+## FEATURE 1 — Admin Artwork Management (Full CRUD)
+
+**Goal**: Admin can add, edit, and archive artworks through the dashboard UI. No code changes or seed scripts needed ever again.
+
+### What to build
+
+**1. Update `src/types/index.ts`**
+Add `archived?: boolean` field to the `Artwork` interface.
+
+**2. Update `src/lib/firebase/firestore.ts`**
+Add `.where("archived", "!=", true)` to both `getArtworks()` and `getFeaturedArtworks()` so archived artworks never appear publicly.
+
+**3. Create `src/app/api/artworks/route.ts`**
+- `GET`: Returns all artworks (including archived) — admin only. Verify via `Authorization: Bearer <idToken>` header using `getAdminAuth().verifyIdToken()`. Check that the decoded token's UID has `role === "admin"` in Firestore.
+- `POST`: Creates a new artwork document in Firestore using `getAdminDb()`. Same auth check. Auto-sets `createdAt: serverTimestamp()` and `archived: false`.
+
+**4. Create `src/app/api/artworks/[id]/route.ts`**
+- `PATCH`: Updates artwork fields. Same admin auth check.
+- For archiving, accept `{ archived: true, inStock: false }` — never hard-delete.
+
+**5. Create `src/components/admin/ArtworkForm.tsx`** (client component)
+
+A form with these fields matching the `Artwork` type exactly:
+- `title` — text input (required)
+- `description` — textarea (required)
+- `price` — number input, label "Price (USD)" (required, min 1)
+- `category` — `<select>` using `ART_CATEGORIES` constant excluding "All"
+- `medium` — text input, placeholder "e.g. Oil on canvas"
+- `dimensions` — text input, placeholder "e.g. 24 × 36 inches"
+- `isFeatured` — styled toggle checkbox, label "Show on homepage"
+- `inStock` — styled toggle checkbox, label "Available for purchase" (default: true)
+- `imageUrl` — file input that:
+  1. On file select, calls `uploadImage(file, "artwork-images/" + timestamp + "_" + file.name)` from `src/lib/firebase/storage.ts`
+  2. Shows an upload progress state
+  3. Displays a preview of the uploaded image
+  4. Stores the returned download URL in form state as `imageUrl`
+
+Props: `artwork?: Artwork` (if provided, form is in edit mode pre-populated), `onSuccess: () => void`.
+
+On submit:
+- `POST /api/artworks` for new artworks
+- `PATCH /api/artworks/{artwork.id}` for edits
+- Include `Authorization: Bearer ${await auth.currentUser.getIdToken()}` header on all requests
+- Show loading state on submit button
+- Call `onSuccess()` and show success toast on completion
+
+**6. Create `src/app/admin/artworks/page.tsx`**
+
+Protected with `<AuthGuard requireAdmin>`. Two views controlled by a state variable:
+- **"artworks"** — table view listing all artworks with columns: Thumbnail (40×40px), Title, Category, Price, Stock status (Badge), Featured (Badge), Actions
+  - Actions: "Edit" button (switches to edit view with that artwork pre-selected), "Archive" button (sends PATCH with `{ archived: true, inStock: false }`, removes from list on success)
+- **"add"** — renders `<ArtworkForm onSuccess={() => setView("artworks")} />`
+- **"edit"** — renders `<ArtworkForm artwork={selectedArtwork} onSuccess={() => setView("artworks")} />`
+
+Tab bar at the top: "All Artworks" tab and "Add New Artwork" tab. Clicking a row's Edit button also switches to the edit view.
+
+**7. Add to admin sidebar navigation**: "Artworks" link → `/admin/artworks` with a `Palette` Lucide icon.
+
+---
+
+## FEATURE 2 — Admin Commission Form Customization
+
+**Goal**: Admin can edit the categories and budget ranges shown in the customer-facing commission form. Changes go live immediately without a deployment.
+
+### What to build
+
+**1. Update `src/types/index.ts`**
+Add new interface:
+```typescript
+interface CommissionConfig {
+  categories: string[];
+  budgetRanges: string[];
+  updatedAt: Timestamp | string;
+}
+```
+
+**2. Create `src/app/api/admin/settings/route.ts`**
+- `GET`: Returns the `settings/commissionConfig` Firestore document. No auth required (public read).
+- `POST`: Writes updated `{ categories, budgetRanges, updatedAt: serverTimestamp() }` to `settings/commissionConfig` using `getAdminDb()`. Requires admin auth via ID token header.
+
+**3. Update `src/components/commission/CommissionForm.tsx`**
+
+On component mount, fetch the `settings/commissionConfig` document from Firestore using the client SDK:
+```typescript
+const configDoc = await getDoc(doc(db, "settings", "commissionConfig"));
+```
+If the document exists, use its `categories` and `budgetRanges` arrays to populate the form dropdowns. If it doesn't exist or the fetch fails, silently fall back to the existing `ART_CATEGORIES` and `BUDGET_RANGES` constants. No error shown to the user in fallback case.
+
+**4. Create `src/app/admin/settings/page.tsx`**
+
+Protected with `<AuthGuard requireAdmin>`. On mount, `GET /api/admin/settings` to load current config.
+
+Two editable sections side by side on desktop, stacked on mobile:
+
+**Categories section**:
+- Label "Art Categories"
+- A list where each item is a text input + red "×" remove button
+- "Add Category" button (outline variant) appends a new empty input to the list
+- No duplicates allowed (show inline error if duplicate detected)
+
+**Budget Ranges section**:
+- Same pattern as categories
+- Label "Budget Ranges"
+
+At the bottom: "Save Settings" primary button. On click:
+- `POST /api/admin/settings` with current arrays
+- Show success toast: "Commission form updated. Changes are live immediately."
+- Show error toast on failure
+
+**5. Initialize default config in `POST /api/seed`**
+
+After seeding artworks, check if `settings/commissionConfig` exists. If not, write it with the default `ART_CATEGORIES` (excluding "All") and `BUDGET_RANGES` from constants.
+
+**6. Add to admin sidebar**: "Settings" link → `/admin/settings` with `Settings` Lucide icon.
+
+---
+
+## FEATURE 3 — Admin Cannot Purchase or Submit Commissions
+
+**Goal**: When browsing as admin, purchasing and commission submission are visually blocked with a helpful explanation. This is a UX gate, not a security feature.
+
+### What to build
+
+**In `src/components/shop/ArtworkCard.tsx`**:
+
+Import `useAuth()`. If `isAdmin === true`, replace the "Add to Cart" button with:
+```tsx
+<Button variant="outline" disabled className="cursor-not-allowed w-full" title="Switch to Customer View in your profile to make purchases">
+  Admin View — Cannot Purchase
+</Button>
+```
+
+**In `src/app/shop/[id]/page.tsx`**:
+
+If `isAdmin === true`, replace both "Add to Cart" and "Buy Now" buttons with the same disabled button above.
+
+**In `src/components/commission/CommissionForm.tsx`**:
+
+If `isAdmin === true`, render this banner above the form (do not hide the form itself, just block submission):
+```tsx
+<div className="bg-primary-light border border-primary rounded-lg p-4 flex items-center gap-3 mb-6">
+  <Info className="text-primary shrink-0" size={20} />
+  <p className="text-sm text-accent">
+    You are viewing as Admin. Switch to <strong>Customer View</strong> in your profile to submit commission requests.
+  </p>
+</div>
+```
+Disable the submit button when `isAdmin === true`.
+
+---
+
+## FEATURE 4 — Admin Role Toggle (Customer / Admin View Switch)
+
+**Goal**: Admin can flip a toggle in their profile to browse the entire site as a customer would see it, with admin features hidden.
+
+### What to build
+
+**1. Update `src/providers/AuthProvider.tsx`**
+
+Add to context:
+```typescript
+viewMode: "admin" | "customer";
+setViewMode: (mode: "admin" | "customer") => void;
+```
+
+Initialize `viewMode` by reading from `localStorage.getItem("admin-view-mode")` — default to `"admin"` if the stored value is missing or the user is not an admin.
+
+Add `setViewMode` function that updates state AND writes to `localStorage.setItem("admin-view-mode", mode)`.
+
+**CRITICAL**: Change the exported `isAdmin` value to:
+```typescript
+isAdmin: profile?.role === "admin" && viewMode === "admin"
+```
+This one change makes ALL existing `isAdmin` checks in the entire codebase automatically respect the toggle with zero other changes needed.
+
+**2. Update `src/app/profile/page.tsx`**
+
+Inside the admin's profile card (only render when `profile?.role === "admin"`), add a toggle switch component below the user's display name:
+
+```tsx
+// Toggle switch — Tailwind only, no library
+<div className="flex items-center gap-3 mt-3">
+  <span className={cn("text-sm font-medium", viewMode === "customer" ? "text-primary" : "text-muted")}>
+    Customer View
+  </span>
+  <button
+    role="switch"
+    aria-checked={viewMode === "admin"}
+    onClick={() => setViewMode(viewMode === "admin" ? "customer" : "admin")}
+    className={cn(
+      "relative w-12 h-6 rounded-full transition-colors duration-200",
+      viewMode === "admin" ? "bg-primary" : "bg-gray-300"
+    )}
+  >
+    <span className={cn(
+      "absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200",
+      viewMode === "admin" ? "translate-x-7" : "translate-x-1"
+    )} />
+  </button>
+  <span className={cn("text-sm font-medium", viewMode === "admin" ? "text-primary" : "text-muted")}>
+    Admin View
+  </span>
+</div>
+```
+
+When `viewMode === "customer"`, show a yellow banner at the top of the profile page:
+```tsx
+<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-center gap-2 mb-4">
+  <Eye size={16} className="text-yellow-600" />
+  <p className="text-sm text-yellow-800">You are browsing as a customer. Admin features are hidden.</p>
+</div>
+```
+
+**3. Update `src/components/layout/Navbar.tsx`**
+
+When `profile?.role === "admin"` AND `viewMode === "customer"`, show a pill badge next to the user's avatar/profile icon:
+```tsx
+<span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded-full">
+  Customer Mode
+</span>
+```
+
+---
+
+## FEATURE 5 — Promo Codes
+
+**Goal**: Admin creates promo codes with percentage or fixed-dollar discounts. Customers apply them in the cart and see the discount before going to Stripe.
+
+### What to build
+
+**1. Update `src/types/index.ts`**
+```typescript
+interface PromoCode {
+  id: string;
+  code: string;           // always stored uppercase
+  type: "percentage" | "fixed";
+  value: number;          // 20 = 20% OR 15 = $15 off
+  maxUses: number | null; // null = unlimited
+  usedCount: number;
+  active: boolean;
+  expiresAt: Timestamp | string | null;
+  createdAt: Timestamp | string;
+}
+```
+
+**2. Create `src/app/api/admin/promo-codes/route.ts`**
+- `GET`: Returns all promo codes from Firestore `promoCodes` collection. Admin auth required.
+- `POST`: Creates a new promo code. Validate: code must be non-empty, value must be > 0, percentage type value must be ≤ 100. Auto-uppercase the code. Set `usedCount: 0`. Admin auth required.
+
+**3. Create `src/app/api/admin/promo-codes/[id]/route.ts`**
+- `PATCH`: Toggle `active` field. Admin auth required.
+- `DELETE`: Hard deletes the promo code document. Admin auth required.
+
+**4. Create `src/app/api/promo/validate/route.ts`** (public, no auth required)
+- `POST` accepts `{ code: string, cartTotal: number }`
+- Queries `promoCodes` where `code == code.toUpperCase()`
+- Validation checks in order:
+  1. Document exists → else `{ valid: false, reason: "Invalid promo code" }`
+  2. `active === true` → else `{ valid: false, reason: "This promo code is no longer active" }`
+  3. `expiresAt` is null OR `expiresAt > now` → else `{ valid: false, reason: "This promo code has expired" }`
+  4. `maxUses` is null OR `usedCount < maxUses` → else `{ valid: false, reason: "This promo code has reached its usage limit" }`
+- Calculate `discountAmount`:
+  - If `type === "percentage"`: `Math.round((cartTotal * value / 100) * 100) / 100`
+  - If `type === "fixed"`: `Math.min(value, cartTotal)` (never negative total)
+- Return `{ valid: true, type, value, discountAmount, finalTotal: cartTotal - discountAmount }`
+- Do NOT increment `usedCount` here
+
+**5. Update `src/components/cart/CartSummary.tsx`**
+
+Add promo code section above the total breakdown:
+
+State needed: `promoCode: string` (input value), `appliedPromo: { code: string, discountAmount: number } | null`, `promoError: string`, `promoLoading: boolean`
+
+UI:
+```
+[Promo code input field] [Apply button]
+// If applied:
+✓ Code applied: SUMMER20 (−$20.00)  [×]
+```
+
+- Input auto-uppercases as user types
+- "Apply" button POSTs to `/api/promo/validate` with `{ code, cartTotal: subtotal }`
+- On success: set `appliedPromo`, clear input, show green checkmark line item
+- On failure: show `promoError` in red below the input
+- The × button clears `appliedPromo` and `promoError`
+- Grand total line now shows `subtotal - appliedPromo.discountAmount` (never below $0)
+- The discount appears as a separate line item: "Promo Discount (CODE)" in green
+
+**6. Update `src/app/api/checkout/route.ts`**
+
+Accept new optional fields in request body: `discountAmount?: number`, `promoCode?: string`.
+
+If `discountAmount > 0`:
+- Add a line item with negative unit_amount for the discount:
+```typescript
+{
+  price_data: {
+    currency: "usd",
+    product_data: { name: `Promo Code: ${promoCode}` },
+    unit_amount: -Math.round(discountAmount * 100), // negative = discount
+  },
+  quantity: 1,
+}
+```
+- Set `metadata: { promoCode }` on the session
+
+**7. Update `src/app/api/webhook/route.ts`**
+
+After writing the order to Firestore, check `session.metadata?.promoCode`. If present:
+- Query `promoCodes` where `code == session.metadata.promoCode`
+- Increment `usedCount` using `FieldValue.increment(1)`
+- Also store `promoCode` and `discountAmount` on the created Order document
+
+**8. Update `src/types/index.ts` `Order` interface**
+Add: `promoCode?: string`, `discountAmount?: number`
+
+**9. Update Firestore rules** — add:
+```
+match /promoCodes/{id} {
+  allow read: if true; // needed for validate endpoint (via Admin SDK actually, so this is fine either way)
+  allow write: if isAdmin();
+}
+```
+
+**10. Create `src/app/admin/promo-codes/page.tsx`**
+
+Protected with `<AuthGuard requireAdmin>`. 
+
+Top section — "Create New Code" form (always visible, not a modal):
+- Code text input (auto-uppercase on change)
+- Type: two radio buttons — "Percentage (%)" and "Fixed Amount ($)"
+- Value: number input (label changes based on type: "Discount %" or "Discount Amount ($)")
+- Max Uses: number input + "Unlimited" checkbox (checking it sets maxUses to null and disables the input)
+- Expiry Date: date input, optional
+- "Create Code" primary button
+
+Below — codes table with columns: Code, Type, Value, Used (used/max or used/∞), Expires, Active toggle, Delete button.
+- Active toggle: calls `PATCH /api/admin/promo-codes/[id]` to flip `active`
+- Delete: calls `DELETE /api/admin/promo-codes/[id]` with confirmation (`window.confirm`)
+
+**11. Add to admin sidebar**: "Promo Codes" link → `/admin/promo-codes` with `Tag` Lucide icon.
+
+---
+
+## FEATURE 6 — Customer-to-Admin Real-Time Messaging
+
+**Goal**: Customers can message the admin about an artwork or in general. Admin has an inbox and can reply. Real-time using Firestore `onSnapshot`.
+
+### What to build
+
+**1. Update `src/types/index.ts`**
+```typescript
+interface MessageThread {
+  id: string;
+  customerId: string;
+  customerEmail: string;
+  customerName: string;
+  artworkId: string | null;
+  artworkTitle: string | null;
+  lastMessage: string;
+  lastMessageAt: Timestamp | string;
+  unreadByAdmin: boolean;
+  unreadByCustomer: boolean;
+  createdAt: Timestamp | string;
+}
+
+interface ChatMessage {
+  id: string;
+  senderId: string;       // UID or "admin"
+  senderName: string;
+  text: string;
+  sentAt: Timestamp | string;
+}
+```
+
+**2. Update Firestore rules** — add:
+```
+match /messages/{threadId} {
+  allow read: if isAuthenticated() && (isOwner(resource.data.customerId) || isAdmin());
+  allow create: if isAuthenticated();
+  allow update: if isAuthenticated() && (isOwner(resource.data.customerId) || isAdmin());
+  
+  match /chats/{chatId} {
+    allow read, write: if isAuthenticated() && 
+      (isOwner(get(/databases/$(database)/documents/messages/$(threadId)).data.customerId) || isAdmin());
+  }
+}
+```
+
+**3. Create `src/app/api/messages/send/route.ts`**
+
+`POST` — accepts `{ threadId?: string, text: string, artworkId?: string, artworkTitle?: string }`. Requires auth via ID token header.
+
+Logic:
+- If `threadId` is provided: add chat document to `messages/{threadId}/chats`, update thread's `lastMessage`, `lastMessageAt`, and set `unreadByAdmin: true` (if sender is customer) or `unreadByCustomer: true` (if sender is admin — check their role)
+- If `threadId` is NOT provided (first message): create the thread document first, then add the first chat document. Return `{ threadId: newId }`
+- After each message, write a notification document (see Feature 7) if the sender is a customer
+
+**4. Create `src/components/shop/MessageDrawer.tsx`** (client component)
+
+A slide-up panel from the bottom of the screen. Props: `artwork: Artwork | null`, `open: boolean`, `onClose: () => void`.
+
+Behavior:
+- When `user` is null: show "Please sign in to send messages" with a login link instead of the chat UI
+- On open: query Firestore for existing thread matching `customerId == user.uid` AND `artworkId == artwork.id` (or `artworkId == null` for general). If found, load that thread. If not, the first message will create it.
+- Set up `onSnapshot` on `messages/{threadId}/chats` ordered by `sentAt` asc when a threadId is known
+- Clean up `onSnapshot` listener on drawer close or component unmount
+
+UI layout (fixed bottom panel, full width on mobile, max-w-lg centered or right-aligned on desktop):
+- Header: artwork title if present, or "Message the Artist", with a close × button
+- Scrollable message list: customer messages right-aligned (lavender bubble), admin messages left-aligned (gray bubble)
+- Bottom input area: text input + Send button
+- Auto-scroll to bottom when new messages arrive (use a ref + `scrollIntoView`)
+- Show loading state while fetching existing thread
+
+Animation: slide up from `translate-y-full` to `translate-y-0` using Tailwind `transition-transform duration-300`.
+
+On send: POST to `/api/messages/send`, clear input, optimistically append the message to local state while waiting for `onSnapshot` to confirm.
+
+**5. Update `src/app/shop/[id]/page.tsx`**
+
+Below the "Add to Cart" / "Buy Now" buttons (or the admin-disabled button), add:
+```tsx
+<Button variant="outline" onClick={() => setDrawerOpen(true)} className="w-full">
+  <MessageCircle size={16} className="mr-2" />
+  Ask a Question
+</Button>
+<MessageDrawer artwork={artwork} open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+```
+
+**6. Create `src/components/admin/InboxList.tsx`**
+
+A scrollable list of message threads. Props: `threads: MessageThread[]`, `selectedId: string | null`, `onSelect: (thread: MessageThread) => void`.
+
+Each row shows: customer name, artwork context (italic if artworkTitle is set), last message preview (truncated to 60 chars), time-ago (e.g. "2m ago", "3h ago"), and an unread blue dot if `unreadByAdmin === true`.
+
+Active thread is highlighted with `bg-primary-light`.
+
+**7. Create `src/components/admin/MessageThread.tsx`**
+
+Props: `thread: MessageThread`, `onClose?: () => void`.
+
+Sets up `onSnapshot` on `messages/{thread.id}/chats` on mount. Cleans up on unmount or when `thread.id` changes.
+
+When the thread opens, immediately update `unreadByAdmin: false` on the thread document using the client SDK.
+
+UI:
+- Thread header: customer name, email, artwork context
+- Scrollable chat area (flex-col, messages in order)
+- Customer messages: right-aligned, lavender background
+- Admin replies: left-aligned, gray background
+- Admin reply input + "Send" button at the bottom
+- Sending admin reply: POST to `/api/messages/send` with `threadId`, sets `unreadByCustomer: true` on thread
+
+**8. Create `src/app/admin/messages/page.tsx`**
+
+Protected with `<AuthGuard requireAdmin>`. Two-panel layout (left/right on desktop, single panel with back button on mobile):
+- Left panel (1/3 width on desktop): `<InboxList>` — fetches all threads using `onSnapshot` on `messages` collection ordered by `lastMessageAt` desc
+- Right panel (2/3 width on desktop): `<MessageThread>` for selected thread, or an empty state "Select a conversation" when none selected
+
+On mobile: show InboxList by default, show MessageThread when a thread is selected with a "← Back" button.
+
+**9. Add unread dot in Navbar for customers**
+
+In `src/components/layout/Navbar.tsx`, when `user` is authenticated and `profile?.role === "customer"`, set up an `onSnapshot` on `messages` where `customerId == user.uid` AND `unreadByCustomer == true`. If any results, show a blue dot on the profile/messages icon.
+
+Add "Messages" link in the navbar for authenticated users pointing to a customer messages page.
+
+**10. Create `src/app/messages/page.tsx`** (customer messages page)
+
+Protected with `AuthGuard` (non-admin). Lists the customer's own threads (query `messages` where `customerId == user.uid`, ordered by `lastMessageAt` desc) and shows the `MessageThread` component on selection. Same two-panel layout as admin inbox.
+
+**11. Add "Messages" to `NAV_LINKS` constant** (only shown when authenticated).
+
+---
+
+## FEATURE 7 — Firestore-Based Notification System
+
+**Goal**: Key events (new orders, commissions, messages) create notification documents in Firestore. Admin sees a bell icon in the navbar with unread count and a dropdown of recent notifications.
+
+**IMPORTANT**: Use Firestore only. No FCM, no service workers, no push notifications.
+
+### What to build
+
+**1. Update `src/types/index.ts`**
+```typescript
+interface AppNotification {
+  id: string;
+  type: "new_order" | "new_commission" | "new_message";
+  title: string;
+  body: string;
+  read: boolean;
+  link: string;
+  createdAt: Timestamp | string;
+}
+```
+
+**2. Update Firestore rules** — add:
+```
+match /notifications/{id} {
+  allow read, update: if isAdmin();
+  allow create: if true; // API routes use Admin SDK so rules don't matter for writes
+  allow delete: if isAdmin();
+}
+```
+
+**3. Create `src/lib/firebase/notifications.ts`** (server-only helper)
+
+```typescript
+export async function createNotification(
+  type: "new_order" | "new_commission" | "new_message",
+  title: string,
+  body: string,
+  link: string
+) {
+  try {
+    const db = getAdminDb();
+    await db.collection("notifications").add({
+      type, title, body, link,
+      read: false,
+      createdAt: FieldValue.serverTimestamp(),
+    });
+  } catch (e) {
+    console.error("Failed to create notification:", e);
+    // Non-blocking — never throw
+  }
+}
+```
+
+**4. Call `createNotification` in existing API routes** (wrap in try/catch, never block the primary operation):
+
+In `POST /api/webhook` after order is written:
+```typescript
+await createNotification(
+  "new_order",
+  "New Order Received",
+  `Order from ${session.customer_email} — $${(session.amount_total / 100).toFixed(2)}`,
+  "/admin/orders"
+);
+```
+
+In `POST /api/commission` after commission is written:
+```typescript
+await createNotification(
+  "new_commission",
+  "New Commission Request",
+  `${body.name} requested a ${body.category} commission — Budget: ${body.budget}`,
+  "/admin/commissions"
+);
+```
+
+In `POST /api/messages/send` when sender is a customer:
+```typescript
+await createNotification(
+  "new_message",
+  "New Customer Message",
+  `${senderName}: "${text.slice(0, 60)}${text.length > 60 ? "..." : ""}"`,
+  "/admin/messages"
+);
+```
+
+**5. Create `src/hooks/useNotifications.ts`**
+
+```typescript
+export function useNotifications() {
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    // Set up onSnapshot on notifications where read == false, ordered by createdAt desc, limit 20
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "notifications"),
+        where("read", "==", false),
+        orderBy("createdAt", "desc"),
+        limit(20)
+      ),
+      (snapshot) => {
+        const notifs = snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as AppNotification[];
+        setNotifications(notifs);
+        setUnreadCount(notifs.length);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
+
+  const markRead = async (id: string) => {
+    await updateDoc(doc(db, "notifications", id), { read: true });
+  };
+
+  const markAllRead = async () => {
+    const batch = writeBatch(db);
+    notifications.forEach(n => batch.update(doc(db, "notifications", n.id), { read: true }));
+    await batch.commit();
+  };
+
+  return { notifications, unreadCount, markRead, markAllRead };
+}
+```
+
+**6. Update `src/components/layout/Navbar.tsx`**
+
+When `isAdmin === true`, add a notification bell between the cart icon and the admin profile avatar:
+
+```tsx
+// Bell button
+<button onClick={() => setBellOpen(!bellOpen)} className="relative p-2">
+  <Bell size={20} />
+  {unreadCount > 0 && (
+    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+      {unreadCount > 9 ? "9+" : unreadCount}
+    </span>
+  )}
+</button>
+```
+
+When `bellOpen === true`, render an absolute-positioned dropdown (below the bell, right-aligned, `w-80`, `z-50`, white background, shadow-lg, rounded-xl):
+
+- Header: "Notifications" title + "Mark all read" text button (if unreadCount > 0)
+- List of up to 10 notifications, each row:
+  - Icon based on type: `ShoppingBag` for order, `Palette` for commission, `MessageCircle` for message
+  - Title in bold, body in muted text (2 lines max, `line-clamp-2`)
+  - Time-ago string (e.g. "just now", "5m ago", "2h ago", "3d ago")
+  - Clicking a row: calls `markRead(n.id)`, navigates to `n.link`, closes dropdown
+- Empty state: "No new notifications" in muted text centered
+- Close when clicking outside (use a `useEffect` that adds/removes a `mousedown` listener on `document`)
+
+Use `useNotifications()` hook inside the Navbar.
+
+**7. Add to admin sidebar**: "Notifications" link → (optional, the bell in navbar is primary) with unread badge if desired.
+
+---
+
+## FINAL CHECKLIST
+
+Before finishing, verify:
+
+- [ ] All new Firestore collections have security rules written in `firestore.rules`
+- [ ] All new types are in `src/types/index.ts`
+- [ ] All new admin pages use `<AuthGuard requireAdmin>`
+- [ ] All privileged API routes verify ID token + admin role
+- [ ] All `onSnapshot` listeners are cleaned up in `useEffect` return functions
+- [ ] All Firebase Admin imports exist only in `src/app/api/**` and `src/lib/firebase/admin.ts`
+- [ ] The notification bell only renders when `isAdmin === true`
+- [ ] The customer mode toggle only renders when `profile?.role === "admin"`
+- [ ] Promo code discount is passed to Stripe as a negative line item (not a Stripe Coupon object)
+- [ ] `usedCount` is only incremented in the Stripe webhook, never in the validate endpoint
+- [ ] All email-sending code (Resend) is wrapped in try/catch and never blocks the primary response
+- [ ] All notification writes are wrapped in try/catch and never block the primary response
+- [ ] The existing shop, cart, checkout, commission, auth, and order flows still work exactly as before
+
+---
+
+*Built on Next.js 14 · Firebase · Stripe · Tailwind CSS · Deployed on Vercel*

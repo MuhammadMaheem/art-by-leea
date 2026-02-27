@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS Custom Properties ── */
+:root {
+  --primary: #B57EDC;
+  --primary-light: #E6E6FA;
+  --primary-dark: #9B59B6;
+  --accent: #1F2937;
+  --surface: #FFFFFF;
+  --secondary: #F3F4F6;
+  --muted: #6B7280;
+}
+
+/* ── Base Styles ── */
+body {
+  color: var(--accent);
+  background: var(--surface);
+}
+
+/* ── Accessibility: Respect reduced motion preference ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Utility: Hide scrollbar but keep functionality ── */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
