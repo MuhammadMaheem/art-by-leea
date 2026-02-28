@@ -48,7 +48,7 @@ export default function FilterBar({
       <select
         value={activeSort}
         onChange={(e) => onSortChange(e.target.value)}
-        className="px-4 py-2 rounded-full border border-primary/15 text-sm text-foreground bg-surface min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+        className="px-4 py-2 rounded-full border border-primary/15 dark:border-secondary-warm/60 text-sm text-foreground bg-surface dark:bg-secondary-warm min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
         aria-label="Sort artworks"
       >
         {SORT_OPTIONS.map((opt) => (

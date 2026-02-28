@@ -67,7 +67,7 @@ function AdminSidebar() {
                   "flex items-center gap-2.5 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all min-h-touch cursor-pointer",
                   isActive
                     ? "bg-primary text-white shadow-sm"
-                    : "text-muted hover:bg-secondary hover:text-foreground"
+                    : "text-muted hover:bg-primary-light/15 hover:text-foreground"
                 )}
               >
                 <Icon className="w-4 h-4" aria-hidden="true" />

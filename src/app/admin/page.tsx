@@ -105,7 +105,7 @@ export default function AdminDashboardPage() {
       label: "Pending Items",
       value: (metrics?.pendingOrders ?? 0) + (metrics?.pendingCommissions ?? 0),
       icon: Clock,
-      color: "text-accent bg-accent/15",
+      color: "text-primary-dark bg-primary-light/30",
     },
     {
       label: "Revenue",

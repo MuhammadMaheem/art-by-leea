@@ -32,8 +32,8 @@ export default function CartPage() {
 
         {/* Admin warning banner */}
         {isAdmin && (
-          <div className="mb-6 rounded-gallery border border-accent/30 bg-accent/10 p-4 flex items-center gap-3">
-            <ShieldAlert className="w-5 h-5 text-accent shrink-0" aria-hidden="true" />
+          <div className="mb-6 rounded-gallery border border-primary/20 bg-primary-light/10 dark:bg-primary/10 dark:border-primary/15 p-4 flex items-center gap-3">
+            <ShieldAlert className="w-5 h-5 text-primary-dark dark:text-beige shrink-0" aria-hidden="true" />
             <p className="text-sm text-foreground">
               You are in <strong>Admin mode</strong>. Purchasing is disabled. Switch to Customer mode in your profile to shop.
             </p>
@@ -42,7 +42,7 @@ export default function CartPage() {
 
         {items.length === 0 ? (
           /* Empty cart state */
-          <div className="text-center py-20 bg-secondary/40 rounded-gallery">
+          <div className="text-center py-20 bg-primary-light/8 dark:bg-primary/5 rounded-gallery border border-primary-light/15 dark:border-primary/10">
             <ShoppingBag
               className="w-16 h-16 text-muted/40 mx-auto mb-4"
               aria-hidden="true"

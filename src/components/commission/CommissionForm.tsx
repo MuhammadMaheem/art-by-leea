@@ -216,7 +216,7 @@ export default function CommissionForm() {
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-4 py-3 rounded-gallery border border-primary/15 bg-secondary/50 text-foreground min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
+            className="w-full px-4 py-3 rounded-gallery border border-primary/15 dark:border-secondary-warm/60 bg-secondary/50 dark:bg-secondary-warm text-foreground min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             required
           >
             <option value="">Select a category</option>
@@ -245,7 +245,7 @@ export default function CommissionForm() {
             id="budget"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
-            className="w-full px-4 py-3 rounded-gallery border border-primary/15 bg-secondary/50 text-foreground min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
+            className="w-full px-4 py-3 rounded-gallery border border-primary/15 dark:border-secondary-warm/60 bg-secondary/50 dark:bg-secondary-warm text-foreground min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             required
           >
             <option value="">Select budget</option>
@@ -277,7 +277,7 @@ export default function CommissionForm() {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Tell us about the artwork you'd like — style, colors, mood, subject, size preferences, and any other details..."
           rows={5}
-          className="w-full px-4 py-3 rounded-gallery border border-primary/15 bg-secondary/50 text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep transition-colors resize-y"
+          className="w-full px-4 py-3 rounded-gallery border border-primary/15 dark:border-secondary-warm/60 bg-secondary/50 dark:bg-secondary-warm text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep transition-colors resize-y"
           required
         />
         {errors.description && (

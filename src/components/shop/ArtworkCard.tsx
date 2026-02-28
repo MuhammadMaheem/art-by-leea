@@ -43,7 +43,7 @@ export default function ArtworkCard({ artwork }: ArtworkCardProps) {
       {/* Image — links to product detail */}
       <Link
         href={`/shop/${artwork.id}`}
-        className="block aspect-[3/4] relative overflow-hidden bg-secondary rounded-t-gallery cursor-pointer"
+        className="block aspect-[3/4] relative overflow-hidden bg-gradient-to-br from-secondary to-primary-light/10 rounded-t-gallery cursor-pointer"
       >
         <Image
           src={artwork.imageUrl}

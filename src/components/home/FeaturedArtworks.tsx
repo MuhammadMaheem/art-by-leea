@@ -76,7 +76,7 @@ export default function FeaturedArtworks() {
                 className="group gallery-card cursor-pointer"
               >
                 {/* Image with aspect ratio container */}
-                <div className="aspect-[3/4] relative overflow-hidden bg-secondary rounded-t-gallery">
+                <div className="aspect-[3/4] relative overflow-hidden bg-gradient-to-br from-secondary to-primary-light/10 rounded-t-gallery">
                   <Image
                     src={artwork.imageUrl}
                     alt={artwork.title}

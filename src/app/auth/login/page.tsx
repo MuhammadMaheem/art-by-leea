@@ -12,9 +12,9 @@ export default function LoginPage() {
         <div className="max-w-md mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-14 h-14 bg-primary-light/40 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 bg-primary-light/40 dark:bg-secondary-warm rounded-full flex items-center justify-center mx-auto mb-4">
               <Palette
-                className="w-7 h-7 text-primary-dark"
+                className="w-7 h-7 text-primary-dark dark:text-beige"
                 aria-hidden="true"
               />
             </div>

@@ -11,8 +11,8 @@ export default function NotFound() {
     <section className="py-20 md:py-32">
       <Container>
         <div className="text-center max-w-lg mx-auto">
-          <div className="w-20 h-20 bg-primary-light/40 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Palette className="w-10 h-10 text-primary" aria-hidden="true" />
+          <div className="w-20 h-20 bg-primary-light/40 dark:bg-secondary-warm rounded-full flex items-center justify-center mx-auto mb-6 ring-2 ring-primary-light/30 dark:ring-secondary-deep">
+            <Palette className="w-10 h-10 text-primary dark:text-beige" aria-hidden="true" />
           </div>
           <p className="text-7xl font-heading font-bold text-primary/30 mb-4">404</p>
           <h1 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-3">

@@ -115,7 +115,7 @@ export default function AdminSettingsPage() {
           type="text"
           value={easypaisaNumber}
           onChange={(e) => setEasypaisaNumber(e.target.value)}
-          className="w-full max-w-xs px-3 py-2 rounded-gallery border border-primary/15 bg-secondary/50 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="w-full max-w-xs px-3 py-2 rounded-gallery border border-primary/15 dark:border-secondary-warm/60 bg-secondary/50 dark:bg-secondary-warm text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white dark:focus:bg-secondary-deep transition-colors"
           placeholder="03XXXXXXXXX"
         />
       </div>
@@ -136,7 +136,7 @@ export default function AdminSettingsPage() {
                     setCategories(updated);
                     checkDuplicate(updated, e.target.value, i, "categories");
                   }}
-                  className="flex-1 px-3 py-2 rounded-gallery border border-primary/15 bg-secondary/50 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="flex-1 px-3 py-2 rounded-gallery border border-primary/15 dark:border-secondary-warm/60 bg-secondary/50 dark:bg-secondary-warm text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white dark:focus:bg-secondary-deep transition-colors"
                   placeholder="Category name"
                 />
                 <button
@@ -181,7 +181,7 @@ export default function AdminSettingsPage() {
                     setBudgetRanges(updated);
                     checkDuplicate(updated, e.target.value, i, "budgetRanges");
                   }}
-                  className="flex-1 px-3 py-2 rounded-gallery border border-primary/15 bg-secondary/50 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="flex-1 px-3 py-2 rounded-gallery border border-primary/15 dark:border-secondary-warm/60 bg-secondary/50 dark:bg-secondary-warm text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white dark:focus:bg-secondary-deep transition-colors"
                   placeholder="Budget range"
                 />
                 <button

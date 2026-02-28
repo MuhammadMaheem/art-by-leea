@@ -17,7 +17,7 @@ interface ArtworkGridProps {
 export default function ArtworkGrid({ artworks }: ArtworkGridProps) {
   if (artworks.length === 0) {
     return (
-      <div className="text-center py-20 bg-secondary/40 rounded-gallery">
+      <div className="text-center py-20 bg-primary-light/10 dark:bg-primary/5 rounded-gallery border border-primary-light/20 dark:border-primary/10">
         <p className="text-muted text-lg">
           No artworks found. Try adjusting your filters.
         </p>

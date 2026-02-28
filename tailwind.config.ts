@@ -22,6 +22,7 @@ const config: Config = {
           deep: "var(--secondary-deep)",
         },
         accent: "var(--accent)",
+        beige: "var(--beige)",
         foreground: "var(--foreground)",
         background: "var(--background)",
         surface: "var(--surface)",

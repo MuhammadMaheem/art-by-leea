@@ -123,7 +123,7 @@ export default function ProductDetailPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
           {/* Left: Artwork image */}
-          <div className="aspect-[3/4] relative rounded-gallery overflow-hidden bg-secondary shadow-md">
+          <div className="aspect-[3/4] relative rounded-gallery overflow-hidden bg-gradient-to-br from-secondary to-primary-light/10 shadow-md">
             <Image
               src={artwork.imageUrl}
               alt={artwork.title}

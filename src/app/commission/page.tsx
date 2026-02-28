@@ -58,13 +58,13 @@ export default function CommissionPage() {
                 key={step.title}
                 className="text-center p-6 gallery-card"
               >
-                <div className="w-12 h-12 bg-primary-light/40 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 bg-primary-light/40 dark:bg-secondary-warm rounded-full flex items-center justify-center mx-auto mb-3 ring-1 ring-primary-light/30 dark:ring-secondary-deep">
                   <Icon
-                    className="w-6 h-6 text-primary-dark"
+                    className="w-6 h-6 text-primary-dark dark:text-beige"
                     aria-hidden="true"
                   />
                 </div>
-                <div className="text-xs font-bold text-accent mb-1 tracking-wider">
+                <div className="text-xs font-bold text-primary-dark dark:text-beige mb-1 tracking-wider">
                   Step {index + 1}
                 </div>
                 <h3 className="font-heading font-semibold text-foreground mb-1">

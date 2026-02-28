@@ -11,14 +11,14 @@ import Button from "@/components/ui/Button";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-background to-primary-light/20">
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary-light/15 via-background to-secondary/40">
       {/* Decorative background elements */}
       <div
-        className="absolute -top-24 -right-24 w-96 h-96 bg-primary/8 rounded-full blur-3xl"
+        className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
         aria-hidden="true"
       />
       <div
-        className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl"
+        className="absolute bottom-0 left-0 w-64 h-64 bg-primary-light/15 rounded-full blur-3xl"
         aria-hidden="true"
       />
 

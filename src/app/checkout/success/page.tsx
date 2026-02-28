@@ -22,11 +22,13 @@ function CheckoutSuccessContent() {
   return (
     <section className="py-20 md:py-28">
       <Container>
-        <div className="max-w-lg mx-auto text-center">
-          <CheckCircle
-            className="w-20 h-20 text-success mx-auto mb-6"
-            aria-hidden="true"
-          />
+        <div className="max-w-lg mx-auto text-center gallery-card p-10">
+          <div className="w-20 h-20 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-6 ring-2 ring-success/20">
+            <CheckCircle
+              className="w-12 h-12 text-success"
+              aria-hidden="true"
+            />
+          </div>
           <h1 className="text-3xl font-heading font-bold text-foreground mb-3">
             Order Submitted!
           </h1>

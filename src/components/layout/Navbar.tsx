@@ -109,7 +109,7 @@ export default function Navbar() {
                 <MessageCircle className="w-4 h-4" aria-hidden="true" />
                 Messages
                 {unreadMessages > 0 && (
-                  <span className="absolute -top-0.5 right-0.5 bg-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-0.5 right-0.5 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {unreadMessages}
                   </span>
                 )}
@@ -121,7 +121,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             {/* Customer Mode pill for admins */}
             {profile?.role === "admin" && viewMode === "customer" && (
-              <span className="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-accent/15 text-accent border border-accent/25 tracking-wide">
+              <span className="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary-light/20 text-primary-dark border border-primary/25 dark:bg-secondary-warm dark:text-beige dark:border-secondary-deep tracking-wide">
                 Customer Mode
               </span>
             )}
@@ -183,7 +183,7 @@ export default function Navbar() {
               >
                 <ShoppingCart className="w-5 h-5 text-foreground" aria-hidden="true" />
                 {totalItems() > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {totalItems()}
                   </span>
                 )}

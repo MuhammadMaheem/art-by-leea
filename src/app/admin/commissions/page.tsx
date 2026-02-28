@@ -147,7 +147,7 @@ export default function AdminCommissionsPage() {
               {/* Commission details */}
               <div className="space-y-2 mb-4">
                 <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="bg-secondary px-2.5 py-1 rounded-full text-muted">
+                    <span className="bg-secondary dark:bg-secondary-warm px-2.5 py-1 rounded-full text-muted">
                     {commission.category}
                   </span>
                 </div>
@@ -198,7 +198,7 @@ export default function AdminCommissionsPage() {
                     )
                   }
                   disabled={updatingId === commission.id}
-                  className="text-sm border border-primary/15 rounded-gallery px-3 py-1.5 bg-secondary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-touch cursor-pointer disabled:opacity-50"
+                  className="text-sm border border-primary/15 dark:border-secondary-warm/60 rounded-gallery px-3 py-1.5 bg-secondary/50 dark:bg-secondary-warm text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-touch cursor-pointer disabled:opacity-50"
                 >
                   {COMMISSION_STATUSES.map((status) => (
                     <option key={status} value={status}>

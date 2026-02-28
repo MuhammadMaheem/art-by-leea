@@ -131,7 +131,7 @@ function CustomerMessagesContent() {
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleStartConversation(); } }}
                 placeholder="Type your first message..."
-                className="flex-1 px-4 py-3 rounded-full border border-primary/15 bg-secondary/50 text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep transition-colors"
+                className="flex-1 px-4 py-3 rounded-full border border-primary/15 dark:border-secondary-warm/60 bg-secondary/50 dark:bg-secondary-warm text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep transition-colors"
               />
               <Button onClick={handleStartConversation} loading={sending} disabled={!newMessage.trim()}>
                 <Send className="w-4 h-4 mr-2" aria-hidden="true" />

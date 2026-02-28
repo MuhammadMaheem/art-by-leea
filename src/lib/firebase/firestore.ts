@@ -33,20 +33,21 @@ export async function getArtworks(category?: string): Promise<Artwork[]> {
   if (category && category !== "All") {
     q = query(
       collection(db, "artworks"),
-      where("category", "==", category),
-      orderBy("createdAt", "desc")
+      where("category", "==", category)
     );
   } else {
-    q = query(
-      collection(db, "artworks"),
-      orderBy("createdAt", "desc")
-    );
+    q = query(collection(db, "artworks"));
   }
 
   const snapshot = await getDocs(q);
   return snapshot.docs
     .map((doc) => ({ id: doc.id, ...doc.data() }) as Artwork)
-    .filter((a) => a.archived !== true);
+    .filter((a) => a.archived !== true)
+    .sort((a, b) => {
+      const aT = (a.createdAt as { seconds?: number })?.seconds ?? 0;
+      const bT = (b.createdAt as { seconds?: number })?.seconds ?? 0;
+      return bT - aT;
+    });
 }
 
 /** Fetch featured artworks for the home page (excludes archived) */
@@ -78,14 +79,18 @@ export async function getArtwork(id: string): Promise<Artwork | null> {
 export async function getUserOrders(userId: string): Promise<Order[]> {
   const q = query(
     collection(db, "orders"),
-    where("userId", "==", userId),
-    orderBy("createdAt", "desc")
+    where("userId", "==", userId)
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({
+  const orders = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as Order[];
+  return orders.sort((a, b) => {
+    const aT = (a.createdAt as { seconds?: number })?.seconds ?? 0;
+    const bT = (b.createdAt as { seconds?: number })?.seconds ?? 0;
+    return bT - aT;
+  });
 }
 
 /** Fetch all orders (admin only — use with caution) */
@@ -98,12 +103,18 @@ export async function getAllOrders(): Promise<Order[]> {
   })) as Order[];
 }
 
-/** Update order status */
+/** Update order status (with optional admin note for cancellations) */
 export async function updateOrderStatus(
   orderId: string,
-  status: Order["status"]
+  status: Order["status"],
+  adminNote?: string
 ): Promise<void> {
-  await updateDoc(doc(db, "orders", orderId), { status });
+  const data: Record<string, unknown> = { status };
+  if (status === "cancelled" && adminNote) {
+    data.adminCancellationNote = adminNote;
+    data.cancelledAt = new Date().toISOString();
+  }
+  await updateDoc(doc(db, "orders", orderId), data);
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -128,14 +139,18 @@ export async function getUserCommissions(
 ): Promise<Commission[]> {
   const q = query(
     collection(db, "commissions"),
-    where("userId", "==", userId),
-    orderBy("createdAt", "desc")
+    where("userId", "==", userId)
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({
+  const commissions = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as Commission[];
+  return commissions.sort((a, b) => {
+    const aT = (a.createdAt as { seconds?: number })?.seconds ?? 0;
+    const bT = (b.createdAt as { seconds?: number })?.seconds ?? 0;
+    return bT - aT;
+  });
 }
 
 /** Fetch all commission requests (admin only) */

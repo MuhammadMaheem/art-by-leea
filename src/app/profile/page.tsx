@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, Package, PenTool, User, Lock } from "lucide-react";
+import { LogOut, Package, PenTool, User, Lock, XCircle } from "lucide-react";
 import Container from "@/components/layout/Container";
 import AuthGuard from "@/components/auth/AuthGuard";
 import Badge from "@/components/ui/Badge";
@@ -37,6 +37,11 @@ function ProfileContent() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [commissions, setCommissions] = useState<Commission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelReasonError, setCancelReasonError] = useState("");
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -67,6 +72,61 @@ function ProfileContent() {
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
+  };
+
+  const openCancelDialog = (orderId: string) => {
+    setCancelTargetId(orderId);
+    setCancelReason("");
+    setCancelReasonError("");
+    setShowCancelDialog(true);
+  };
+
+  const closeCancelDialog = () => {
+    setShowCancelDialog(false);
+    setCancelTargetId(null);
+    setCancelReason("");
+    setCancelReasonError("");
+  };
+
+  const handleCancelOrder = async () => {
+    if (!user || !cancelTargetId) return;
+
+    const trimmed = cancelReason.trim();
+    if (trimmed.length < 10) {
+      setCancelReasonError("Please provide at least 10 characters.");
+      return;
+    }
+
+    setCancellingId(cancelTargetId);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch(`/api/orders/${cancelTargetId}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ reason: trimmed }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Failed to cancel order.");
+        return;
+      }
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === cancelTargetId
+            ? { ...o, status: "cancelled", cancellationReason: trimmed, cancelledAt: new Date().toISOString() }
+            : o
+        )
+      );
+      toast.success("Order cancelled successfully.");
+      closeCancelDialog();
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setCancellingId(null);
+    }
   };
 
   const handleChangePassword = async (e: React.FormEvent) => {
@@ -108,8 +168,8 @@ function ProfileContent() {
         {/* Profile header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-12">
           <div className="flex items-center gap-5">
-            <div className="w-18 h-18 bg-primary-light/40 rounded-full flex items-center justify-center ring-2 ring-primary/20">
-              <User className="w-9 h-9 text-primary" aria-hidden="true" />
+            <div className="w-18 h-18 bg-primary-light/40 dark:bg-secondary-warm rounded-full flex items-center justify-center ring-2 ring-primary/20 dark:ring-secondary-deep">
+              <User className="w-9 h-9 text-primary dark:text-beige" aria-hidden="true" />
             </div>
             <div>
               <h1 className="text-2xl font-heading font-bold text-foreground">
@@ -130,7 +190,7 @@ function ProfileContent() {
 
         {/* Admin view-mode toggle */}
         {profile?.role === "admin" && (
-          <div className="mb-8 rounded-gallery border border-accent/30 bg-accent/10 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="mb-8 rounded-gallery border border-primary/20 bg-primary-light/10 dark:bg-primary/10 dark:border-primary/15 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <p className="font-heading font-medium text-foreground">Admin View Mode</p>
               <p className="text-sm text-muted">
@@ -141,7 +201,7 @@ function ProfileContent() {
             </div>
             <button
               onClick={() => setViewMode(viewMode === "admin" ? "customer" : "admin")}
-              className="cursor-pointer inline-flex items-center gap-2 px-5 py-2 rounded-full border border-accent/30 bg-surface text-foreground font-medium hover:bg-accent/10 transition-colors min-h-touch"
+              className="cursor-pointer inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/25 bg-surface text-foreground font-medium hover:bg-primary-light/15 dark:hover:bg-primary/10 transition-colors min-h-touch"
             >
               Switch to {viewMode === "admin" ? "Customer" : "Admin"} View
             </button>
@@ -153,6 +213,7 @@ function ProfileContent() {
           <div className="flex items-center gap-2 mb-4">
             <Package className="w-5 h-5 text-primary" aria-hidden="true" />
             <h2 className="text-xl font-heading font-bold text-foreground">My Orders</h2>
+            <span className="text-xs text-muted ml-auto">Permanent history</span>
           </div>
 
           {loading ? (
@@ -167,24 +228,60 @@ function ProfileContent() {
             </p>
           ) : (
             <div className="space-y-3">
-              {orders.map((order) => (
-                <div
-                  key={order.id}
-                  className="gallery-card p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-                >
-                  <div>
-                    <p className="font-medium text-foreground">
-                      Order #{order.id.slice(0, 8)}
-                    </p>
-                    <p className="text-sm text-muted">
-                      {order.items.length} item
-                      {order.items.length !== 1 ? "s" : ""} &middot;{" "}
-                      <span className="text-accent font-medium">{formatPrice(order.total)}</span>
-                    </p>
+              {orders.map((order) => {
+                const isCancellable =
+                  order.status === "pending" || order.status === "pending_verification";
+                const isCancelling = cancellingId === order.id;
+
+                return (
+                  <div
+                    key={order.id}
+                    className="gallery-card p-4 flex flex-col gap-3"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div>
+                        <p className="font-medium text-foreground">
+                          Order #{order.id.slice(0, 8)}
+                        </p>
+                        <p className="text-sm text-muted">
+                          {order.items.length} item
+                          {order.items.length !== 1 ? "s" : ""} &middot;{" "}
+                          <span className="text-accent font-medium">{formatPrice(order.total)}</span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+                        <Badge status={order.status} />
+
+                        {isCancellable && (
+                          <button
+                            onClick={() => openCancelDialog(order.id)}
+                            disabled={isCancelling}
+                            className="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-error border border-error/30 hover:bg-error/10 transition-colors disabled:opacity-60"
+                          >
+                            <XCircle className="w-3.5 h-3.5" aria-hidden="true" />
+                            {isCancelling ? "Cancelling…" : "Cancel"}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {order.status === "cancelled" && order.cancellationReason && (
+                      <div className="text-xs text-muted bg-error/5 dark:bg-error/10 border border-error/15 rounded-lg px-3 py-2">
+                        <span className="font-medium text-error">Your reason:</span>{" "}
+                        {order.cancellationReason}
+                      </div>
+                    )}
+
+                    {order.status === "cancelled" && order.adminCancellationNote && (
+                      <div className="text-xs text-muted bg-primary/5 dark:bg-primary/10 border border-primary/15 rounded-lg px-3 py-2">
+                        <span className="font-medium text-primary">Admin note:</span>{" "}
+                        {order.adminCancellationNote}
+                      </div>
+                    )}
                   </div>
-                  <Badge status={order.status} />
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -275,6 +372,64 @@ function ProfileContent() {
           </form>
         </div>
       </Container>
+
+      {/* Cancel order dialog */}
+      {showCancelDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={closeCancelDialog}
+            aria-hidden="true"
+          />
+          <div className="relative bg-surface border border-secondary-warm dark:border-secondary-deep rounded-gallery shadow-2xl max-w-md w-full p-6">
+            <h3 className="text-lg font-heading font-bold text-foreground mb-1">
+              Cancel Order
+            </h3>
+            <p className="text-sm text-muted mb-4">
+              Please provide a reason for cancelling this order. This action cannot be undone.
+            </p>
+
+            <textarea
+              value={cancelReason}
+              onChange={(e) => {
+                setCancelReason(e.target.value);
+                if (cancelReasonError) setCancelReasonError("");
+              }}
+              placeholder="Why are you cancelling this order? (min. 10 characters)"
+              rows={4}
+              className="w-full rounded-gallery border border-secondary-warm dark:border-secondary-warm/60 bg-surface dark:bg-secondary-warm text-foreground placeholder:text-muted/60 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+            />
+            <div className="flex items-center justify-between mt-1.5 mb-4">
+              {cancelReasonError ? (
+                <p className="text-xs text-error">{cancelReasonError}</p>
+              ) : (
+                <span />
+              )}
+              <span className={`text-xs ${cancelReason.trim().length < 10 ? "text-muted" : "text-success"}`}>
+                {cancelReason.trim().length}/10
+              </span>
+            </div>
+
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={closeCancelDialog}
+                disabled={!!cancellingId}
+                className="cursor-pointer px-4 py-2 rounded-full text-sm font-medium border border-secondary-warm hover:bg-secondary/60 dark:hover:bg-secondary-warm transition-colors"
+              >
+                Keep Order
+              </button>
+              <button
+                onClick={handleCancelOrder}
+                disabled={!!cancellingId || cancelReason.trim().length < 10}
+                className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-error text-white hover:bg-error/90 transition-colors disabled:opacity-60"
+              >
+                <XCircle className="w-4 h-4" aria-hidden="true" />
+                {cancellingId ? "Cancelling…" : "Confirm Cancel"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

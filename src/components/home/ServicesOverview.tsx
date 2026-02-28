@@ -30,7 +30,7 @@ const services = [
 
 export default function ServicesOverview() {
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-secondary/40 to-background">
+    <section className="py-20 md:py-28 bg-gradient-to-b from-primary-light/10 via-secondary/30 to-background">
       <Container>
         {/* Section header */}
         <div className="text-center mb-14">
@@ -56,9 +56,9 @@ export default function ServicesOverview() {
                 className="gallery-card p-8 text-center"
               >
                 {/* Icon container */}
-                <div className="w-14 h-14 bg-primary-light/40 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-14 h-14 bg-primary-light/40 dark:bg-secondary-warm rounded-full flex items-center justify-center mx-auto mb-6">
                   <Icon
-                    className="w-7 h-7 text-primary-dark"
+                    className="w-7 h-7 text-primary-dark dark:text-beige"
                     aria-hidden="true"
                   />
                 </div>

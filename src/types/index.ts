@@ -41,6 +41,9 @@ export interface Order {
   stripeSessionId?: string;
   promoCode?: string;
   discountAmount?: number;
+  cancellationReason?: string;
+  cancelledAt?: Timestamp | string;
+  adminCancellationNote?: string;
   createdAt: Timestamp | string;
 }
 
