@@ -52,7 +52,7 @@ export async function sendOrderConfirmation(params: {
         <p>Total: <strong>Rs. ${total.toFixed(0)}</strong></p>
         <p>We'll notify you when your artwork ships.</p>
         <hr style="border: 1px solid #E6E6FA; margin: 24px 0;" />
-        <p style="color: #6B7280; font-size: 14px;">Art By Leena</p>
+        <p style="color: #6B7280; font-size: 14px;">Art By Aleeha</p>
       </div>
     `,
   });
@@ -87,7 +87,7 @@ export async function sendCommissionNotification(params: {
         </p>
         <p>Log in to your admin dashboard to view the full request.</p>
         <hr style="border: 1px solid #E6E6FA; margin: 24px 0;" />
-        <p style="color: #6B7280; font-size: 14px;">Art By Leena Admin</p>
+        <p style="color: #6B7280; font-size: 14px;">Art By Aleeha Admin</p>
       </div>
     `,
   });
@@ -121,7 +121,7 @@ export async function sendCommissionStatusUpdate(params: {
         has been updated to: <strong>${statusLabel}</strong></p>
         <p>Log in to your account to view details.</p>
         <hr style="border: 1px solid #E6E6FA; margin: 24px 0;" />
-        <p style="color: #6B7280; font-size: 14px;">Art By Leena</p>
+        <p style="color: #6B7280; font-size: 14px;">Art By Aleeha</p>
       </div>
     `,
   });
@@ -162,7 +162,7 @@ export async function sendOrderReceiptToAdmin(params: {
         <img src="${receiptImageUrl}" alt="Payment receipt" style="max-width: 100%; border-radius: 8px; margin-top: 8px;" />
         <p style="margin-top: 16px;">Log in to the admin dashboard to approve or reject this order.</p>
         <hr style="border: 1px solid #E6E6FA; margin: 24px 0;" />
-        <p style="color: #6B7280; font-size: 14px;">Art By Leena Admin</p>
+        <p style="color: #6B7280; font-size: 14px;">Art By Aleeha Admin</p>
       </div>
     `,
   });

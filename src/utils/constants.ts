@@ -5,7 +5,7 @@
  * navigation links, or modify product categories from a single file.
  */
 
-export const SITE_NAME = "Art By Leena";
+export const SITE_NAME = "Art By Aleeha";
 export const SITE_DESCRIPTION =
   "Original art pieces and custom commissions crafted with passion.";
 

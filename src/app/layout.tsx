@@ -27,7 +27,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Art By Leena — Original Art & Custom Commissions",
+  title: "Art By Aleeha — Original Art & Custom Commissions",
   description:
     "Discover original art pieces and request custom commissions. Handcrafted with passion, delivered to your door.",
 };

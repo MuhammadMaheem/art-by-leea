@@ -110,7 +110,7 @@ function CustomerMessagesContent() {
         {threadId ? (
           <div className="gallery-card h-[500px] flex flex-col overflow-hidden">
             <div className="px-5 py-3.5 border-b border-secondary-warm">
-              <h2 className="font-heading font-semibold text-foreground">Chat with Art By Leena</h2>
+              <h2 className="font-heading font-semibold text-foreground">Chat with Art By Aleeha</h2>
             </div>
             <div className="flex-1 min-h-0">
               <MessageThread threadId={threadId} />
