@@ -177,7 +177,7 @@ export default function CommissionForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {isAdmin && (
-        <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-4 text-sm text-yellow-800">
+        <div className="rounded-gallery bg-accent/10 border border-accent/25 p-4 text-sm text-foreground">
           You are logged in as an admin. Commission submissions are disabled.
         </div>
       )}
@@ -208,7 +208,7 @@ export default function CommissionForm() {
         <div className="w-full">
           <label
             htmlFor="category"
-            className="block text-sm font-medium text-accent mb-1.5"
+            className="block text-sm font-medium text-foreground mb-1.5 tracking-wide"
           >
             Art Category
           </label>
@@ -216,7 +216,7 @@ export default function CommissionForm() {
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-accent min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="w-full px-4 py-3 rounded-gallery border border-primary/15 bg-secondary/50 text-foreground min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             required
           >
             <option value="">Select a category</option>
@@ -227,7 +227,7 @@ export default function CommissionForm() {
             ))}
           </select>
           {errors.category && (
-            <p className="mt-1.5 text-sm text-red-600" role="alert">
+            <p className="mt-1.5 text-sm text-error" role="alert">
               {errors.category}
             </p>
           )}
@@ -237,7 +237,7 @@ export default function CommissionForm() {
         <div className="w-full">
           <label
             htmlFor="budget"
-            className="block text-sm font-medium text-accent mb-1.5"
+            className="block text-sm font-medium text-foreground mb-1.5 tracking-wide"
           >
             Budget Range
           </label>
@@ -245,7 +245,7 @@ export default function CommissionForm() {
             id="budget"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-accent min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="w-full px-4 py-3 rounded-gallery border border-primary/15 bg-secondary/50 text-foreground min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             required
           >
             <option value="">Select budget</option>
@@ -256,7 +256,7 @@ export default function CommissionForm() {
             ))}
           </select>
           {errors.budget && (
-            <p className="mt-1.5 text-sm text-red-600" role="alert">
+            <p className="mt-1.5 text-sm text-error" role="alert">
               {errors.budget}
             </p>
           )}
@@ -267,7 +267,7 @@ export default function CommissionForm() {
       <div className="w-full">
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-accent mb-1.5"
+          className="block text-sm font-medium text-foreground mb-1.5 tracking-wide"
         >
           Describe Your Vision
         </label>
@@ -277,11 +277,11 @@ export default function CommissionForm() {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Tell us about the artwork you'd like — style, colors, mood, subject, size preferences, and any other details..."
           rows={5}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-accent placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"
+          className="w-full px-4 py-3 rounded-gallery border border-primary/15 bg-secondary/50 text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep transition-colors resize-y"
           required
         />
         {errors.description && (
-          <p className="mt-1.5 text-sm text-red-600" role="alert">
+          <p className="mt-1.5 text-sm text-error" role="alert">
             {errors.description}
           </p>
         )}
@@ -289,18 +289,18 @@ export default function CommissionForm() {
 
       {/* Reference image upload */}
       <div className="w-full">
-        <label className="block text-sm font-medium text-accent mb-1.5">
+        <label className="block text-sm font-medium text-foreground mb-1.5 tracking-wide">
           Reference Images (optional, max 3)
         </label>
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors">
+        <div className="border-2 border-dashed border-primary/15 rounded-gallery p-6 text-center hover:border-primary transition-all">
           <ImagePlus
-            className="w-10 h-10 text-muted mx-auto mb-2"
+            className="w-10 h-10 text-muted/40 mx-auto mb-2"
             aria-hidden="true"
           />
           <p className="text-sm text-muted mb-3">
             Upload images for inspiration or reference
           </p>
-          <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-secondary text-accent rounded-lg hover:bg-gray-200 transition-colors min-h-touch">
+          <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-secondary text-foreground rounded-full hover:bg-secondary-warm transition-all min-h-touch">
             <Upload className="w-4 h-4" aria-hidden="true" />
             Choose Files
             <input
@@ -319,7 +319,7 @@ export default function CommissionForm() {
             {files.map((file, index) => (
               <div
                 key={`${file.name}-${index}`}
-                className="relative group w-20 h-20 rounded-lg overflow-hidden border border-gray-200"
+                className="relative group w-20 h-20 rounded-gallery overflow-hidden border border-primary/10"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -330,7 +330,7 @@ export default function CommissionForm() {
                 <button
                   type="button"
                   onClick={() => removeFile(index)}
-                  className="absolute top-0.5 right-0.5 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  className="absolute top-0.5 right-0.5 p-1 bg-error text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                   aria-label={`Remove ${file.name}`}
                 >
                   <X className="w-3 h-3" aria-hidden="true" />

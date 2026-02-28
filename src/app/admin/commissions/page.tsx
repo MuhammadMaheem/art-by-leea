@@ -94,11 +94,11 @@ export default function AdminCommissionsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-accent">Commissions</h1>
+        <h1 className="text-2xl font-heading font-bold text-foreground">Commissions</h1>
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="h-32 bg-secondary rounded-xl animate-pulse"
+            className="h-32 bg-secondary rounded-gallery animate-pulse"
           />
         ))}
       </div>
@@ -107,7 +107,7 @@ export default function AdminCommissionsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-accent">
+      <h1 className="text-2xl font-heading font-bold text-foreground">
         Commissions ({commissions.length})
       </h1>
 
@@ -118,12 +118,12 @@ export default function AdminCommissionsPage() {
           {commissions.map((commission) => (
             <div
               key={commission.id}
-              className="bg-surface border border-secondary rounded-xl p-5"
+              className="gallery-card p-5"
             >
               {/* Commission header */}
               <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-3">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-accent">{commission.name}</p>
+                  <p className="font-medium text-foreground">{commission.name}</p>
                   <p className="text-xs text-muted mt-0.5">
                     {commission.email} &middot;{" "}
                     {commission.createdAt
@@ -147,7 +147,7 @@ export default function AdminCommissionsPage() {
               {/* Commission details */}
               <div className="space-y-2 mb-4">
                 <div className="flex flex-wrap gap-2 text-xs">
-                  <span className="bg-secondary px-2 py-1 rounded">
+                    <span className="bg-secondary px-2.5 py-1 rounded-full text-muted">
                     {commission.category}
                   </span>
                 </div>
@@ -163,7 +163,7 @@ export default function AdminCommissionsPage() {
                       {commission.referenceImageUrls.map((url, idx) => (
                         <div
                           key={idx}
-                          className="relative w-20 h-20 rounded-lg overflow-hidden border border-secondary"
+                          className="relative w-20 h-20 rounded-gallery overflow-hidden border border-secondary-warm"
                         >
                           <Image
                             src={url}
@@ -179,7 +179,7 @@ export default function AdminCommissionsPage() {
               </div>
 
               {/* Status controls */}
-              <div className="flex items-center gap-3 pt-3 border-t border-secondary">
+              <div className="flex items-center gap-3 pt-3 border-t border-secondary-warm">
                 <label
                   htmlFor={`commission-status-${commission.id}`}
                   className="text-xs font-medium text-muted"
@@ -198,7 +198,7 @@ export default function AdminCommissionsPage() {
                     )
                   }
                   disabled={updatingId === commission.id}
-                  className="text-sm border border-secondary rounded-lg px-3 py-1.5 bg-surface text-accent focus:outline-none focus:ring-2 focus:ring-primary min-h-touch cursor-pointer disabled:opacity-50"
+                  className="text-sm border border-primary/15 rounded-gallery px-3 py-1.5 bg-secondary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-touch cursor-pointer disabled:opacity-50"
                 >
                   {COMMISSION_STATUSES.map((status) => (
                     <option key={status} value={status}>

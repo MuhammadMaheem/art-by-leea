@@ -99,15 +99,15 @@ export default function MessageThread({ threadId }: MessageThreadProps) {
                 className={cn(
                   "max-w-[75%] rounded-xl px-4 py-2.5 text-sm",
                   isOwn
-                    ? "bg-primary text-accent rounded-br-sm"
-                    : "bg-gray-100 text-accent rounded-bl-sm"
+                    ? "bg-primary text-white rounded-br-sm"
+                    : "bg-secondary text-foreground rounded-bl-sm"
                 )}
               >
                 <p className="whitespace-pre-wrap break-words">{msg.text}</p>
                 <p
                   className={cn(
                     "text-[10px] mt-1",
-                    isOwn ? "text-accent/60" : "text-muted"
+                    isOwn ? "text-white/60" : "text-muted"
                   )}
                 >
                   {msg.createdAt &&
@@ -123,18 +123,18 @@ export default function MessageThread({ threadId }: MessageThreadProps) {
       </div>
 
       {/* Input area */}
-      <div className="border-t border-gray-200 p-3 flex gap-2">
+      <div className="border-t border-secondary-warm p-3 flex gap-2">
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
-          className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-accent placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+          className="flex-1 px-4 py-2.5 rounded-full border border-primary/15 bg-secondary/50 text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep transition-colors text-sm"
         />
         <button
           onClick={handleSend}
           disabled={!text.trim() || sending}
-          className="p-2.5 rounded-lg bg-primary hover:bg-primary-dark text-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="p-2.5 rounded-full bg-primary hover:bg-primary-dark text-white transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           aria-label="Send message"
         >
           <Send className="w-4 h-4" />

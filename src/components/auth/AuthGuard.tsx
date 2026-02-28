@@ -55,7 +55,7 @@ export default function AuthGuard({
   if (requireAdmin && !isAdmin) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <h2 className="text-2xl font-bold text-accent mb-2">Access Denied</h2>
+        <h2 className="text-2xl font-heading font-bold text-foreground mb-2">Access Denied</h2>
         <p className="text-muted">
           You do not have permission to view this page.
         </p>

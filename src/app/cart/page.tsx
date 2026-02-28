@@ -21,20 +21,20 @@ export default function CartPage() {
   const { isAdmin } = useAuth();
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-14 md:py-20">
       <Container>
-        <h1 className="text-3xl md:text-4xl font-bold text-accent mb-2">
+        <h1 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">
           Shopping Cart
         </h1>
-        <p className="text-sm italic text-primary/70 mb-8">
+        <p className="text-sm italic text-primary/70 mb-10">
           &ldquo;Art is the only way to run away without leaving home.&rdquo; — Twyla Tharp
         </p>
 
         {/* Admin warning banner */}
         {isAdmin && (
-          <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 p-4 flex items-center gap-3">
-            <ShieldAlert className="w-5 h-5 text-yellow-600 shrink-0" aria-hidden="true" />
-            <p className="text-sm text-yellow-800">
+          <div className="mb-6 rounded-gallery border border-accent/30 bg-accent/10 p-4 flex items-center gap-3">
+            <ShieldAlert className="w-5 h-5 text-accent shrink-0" aria-hidden="true" />
+            <p className="text-sm text-foreground">
               You are in <strong>Admin mode</strong>. Purchasing is disabled. Switch to Customer mode in your profile to shop.
             </p>
           </div>
@@ -42,12 +42,12 @@ export default function CartPage() {
 
         {items.length === 0 ? (
           /* Empty cart state */
-          <div className="text-center py-20 bg-secondary/50 rounded-xl">
+          <div className="text-center py-20 bg-secondary/40 rounded-gallery">
             <ShoppingBag
-              className="w-16 h-16 text-muted mx-auto mb-4"
+              className="w-16 h-16 text-muted/40 mx-auto mb-4"
               aria-hidden="true"
             />
-            <h2 className="text-xl font-semibold text-accent mb-2">
+            <h2 className="text-xl font-heading font-semibold text-foreground mb-2">
               Your cart is empty
             </h2>
             <p className="text-muted mb-6">
@@ -68,7 +68,7 @@ export default function CartPage() {
                 </span>
                 <button
                   onClick={clearCart}
-                  className="text-sm text-red-500 hover:text-red-700 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded px-2 py-1"
+                  className="text-sm text-error hover:text-error/80 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 rounded-full px-3 py-1"
                 >
                   Clear all
                 </button>

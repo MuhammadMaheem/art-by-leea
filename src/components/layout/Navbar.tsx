@@ -20,6 +20,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { db } from "@/lib/firebase/client";
 import Container from "./Container";
 import MobileMenu from "./MobileMenu";
+import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -57,13 +58,13 @@ export default function Navbar() {
   }, [user, profile]);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+    <header className="sticky top-0 z-40 glass-nav">
       <Container>
         <div className="flex items-center justify-between h-16">
-          {/* ── Logo ── */}
+          {/* ── Logo / Art Brand Wordmark ── */}
           <Link
             href="/"
-            className="text-xl font-bold text-primary-dark hover:text-primary transition-colors cursor-pointer"
+            className="text-xl font-heading font-bold text-primary-dark hover:text-primary transition-colors cursor-pointer tracking-wide"
           >
             {SITE_NAME}
           </Link>
@@ -77,8 +78,8 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-4 py-2 rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center cursor-pointer ${
-                  pathname === link.href ? "text-primary font-medium" : "text-accent hover:text-primary"
+                className={`px-4 py-2 rounded-full hover:bg-primary-light/30 transition-all min-h-touch flex items-center cursor-pointer text-sm ${
+                  pathname === link.href ? "text-primary-dark font-semibold bg-primary-light/20" : "text-foreground hover:text-primary-dark"
                 }`}
               >
                 {link.label}
@@ -89,8 +90,8 @@ export default function Navbar() {
             {isAdmin && (
               <Link
                 href="/admin"
-                className={`px-4 py-2 rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center cursor-pointer font-medium ${
-                  pathname.startsWith("/admin") ? "text-primary" : "text-primary-dark hover:text-primary"
+                className={`px-4 py-2 rounded-full hover:bg-primary-light/30 transition-all min-h-touch flex items-center cursor-pointer text-sm font-medium ${
+                  pathname.startsWith("/admin") ? "text-primary-dark bg-primary-light/20" : "text-primary-dark hover:text-primary"
                 }`}
               >
                 Dashboard
@@ -101,14 +102,14 @@ export default function Navbar() {
             {user && (
               <Link
                 href={isAdmin ? "/admin/messages" : "/messages"}
-                className={`relative px-4 py-2 rounded-lg hover:bg-primary-light/50 transition-colors min-h-touch flex items-center gap-1.5 cursor-pointer ${
-                  pathname === (isAdmin ? "/admin/messages" : "/messages") ? "text-primary font-medium" : "text-accent hover:text-primary"
+                className={`relative px-4 py-2 rounded-full hover:bg-primary-light/30 transition-all min-h-touch flex items-center gap-1.5 cursor-pointer text-sm ${
+                  pathname === (isAdmin ? "/admin/messages" : "/messages") ? "text-primary-dark font-semibold bg-primary-light/20" : "text-foreground hover:text-primary-dark"
                 }`}
               >
                 <MessageCircle className="w-4 h-4" aria-hidden="true" />
                 Messages
                 {unreadMessages > 0 && (
-                  <span className="absolute -top-0.5 right-0.5 bg-primary text-accent text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-0.5 right-0.5 bg-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {unreadMessages}
                   </span>
                 )}
@@ -120,10 +121,13 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             {/* Customer Mode pill for admins */}
             {profile?.role === "admin" && viewMode === "customer" && (
-              <span className="hidden md:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+              <span className="hidden md:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-accent/15 text-accent border border-accent/25 tracking-wide">
                 Customer Mode
               </span>
             )}
+
+            {/* Theme toggle */}
+            <ThemeToggle />
 
             {/* Notification bell */}
             {user && (
@@ -133,33 +137,33 @@ export default function Navbar() {
                     setShowNotifications(!showNotifications);
                     if (!showNotifications && unreadCount > 0) markAllRead();
                   }}
-                  className="relative p-2 rounded-lg hover:bg-secondary transition-colors min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
+                  className="relative p-2 rounded-full hover:bg-primary-light/30 transition-all min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
                   aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
                 >
-                  <Bell className="w-5 h-5 text-accent" aria-hidden="true" />
+                  <Bell className="w-5 h-5 text-foreground" aria-hidden="true" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    <span className="absolute -top-0.5 -right-0.5 bg-error text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                       {unreadCount}
                     </span>
                   )}
                 </button>
                 {showNotifications && (
-                  <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto bg-white rounded-xl shadow-lg border border-gray-200 z-50">
-                    <div className="px-4 py-3 border-b border-gray-100">
-                      <h3 className="font-semibold text-accent text-sm">Notifications</h3>
+                  <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto bg-surface rounded-gallery shadow-lg border border-primary/10 z-50">
+                    <div className="px-4 py-3 border-b border-secondary">
+                      <h3 className="font-heading font-semibold text-foreground text-sm">Notifications</h3>
                     </div>
                     {notifications.length === 0 ? (
-                      <p className="px-4 py-6 text-center text-muted text-sm">No notifications</p>
+                      <p className="px-4 py-6 text-center text-muted text-sm">All caught up — no new brushstrokes to report.</p>
                     ) : (
-                      <div className="divide-y divide-gray-100">
+                      <div className="divide-y divide-secondary">
                         {notifications.slice(0, 20).map((n) => (
                           <Link
                             key={n.id}
                             href={n.link || "#"}
                             onClick={() => setShowNotifications(false)}
-                            className="block px-4 py-3 hover:bg-gray-50 transition-colors"
+                            className="block px-4 py-3 hover:bg-secondary/50 transition-colors"
                           >
-                            <p className="text-sm font-medium text-accent">{n.title}</p>
+                            <p className="text-sm font-medium text-foreground">{n.title}</p>
                             <p className="text-xs text-muted mt-0.5">{n.body}</p>
                           </Link>
                         ))}
@@ -174,12 +178,12 @@ export default function Navbar() {
             {!isAdmin && (
               <Link
                 href="/cart"
-                className="relative p-2 rounded-lg hover:bg-secondary transition-colors min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
+                className="relative p-2 rounded-full hover:bg-primary-light/30 transition-all min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
                 aria-label={`Shopping cart with ${totalItems()} items`}
               >
-                <ShoppingCart className="w-5 h-5 text-accent" aria-hidden="true" />
+                <ShoppingCart className="w-5 h-5 text-foreground" aria-hidden="true" />
                 {totalItems() > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-primary text-accent text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 bg-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {totalItems()}
                   </span>
                 )}
@@ -191,15 +195,15 @@ export default function Navbar() {
               {user ? (
                 <Link
                   href="/profile"
-                  className="p-2 rounded-lg hover:bg-secondary transition-colors min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
+                  className="p-2 rounded-full hover:bg-primary-light/30 transition-all min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
                   aria-label="Your profile"
                 >
-                  <User className="w-5 h-5 text-accent" aria-hidden="true" />
+                  <User className="w-5 h-5 text-foreground" aria-hidden="true" />
                 </Link>
               ) : (
                 <Link
                   href="/auth/login"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-accent font-medium rounded-lg hover:bg-primary-dark transition-colors min-h-touch cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-primary text-white font-medium rounded-full hover:bg-primary-dark transition-all shadow-sm hover:shadow-md min-h-touch cursor-pointer"
                 >
                   <LogIn className="w-4 h-4" aria-hidden="true" />
                   Sign In
@@ -213,7 +217,7 @@ export default function Navbar() {
               className="md:hidden p-2 rounded-lg hover:bg-secondary transition-colors min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
               aria-label="Open navigation menu"
             >
-              <Menu className="w-6 h-6 text-accent" aria-hidden="true" />
+              <Menu className="w-6 h-6 text-foreground" aria-hidden="true" />
             </button>
           </div>
         </div>

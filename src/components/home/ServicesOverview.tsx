@@ -30,18 +30,18 @@ const services = [
 
 export default function ServicesOverview() {
   return (
-    <section className="py-16 md:py-24 bg-secondary/50">
+    <section className="py-20 md:py-28 bg-gradient-to-b from-secondary/40 to-background">
       <Container>
         {/* Section header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-accent mb-3">
+        <div className="text-center mb-14">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-3">
             Our Services
           </h2>
           <p className="text-muted text-lg max-w-2xl mx-auto">
             From ready-made masterpieces to fully custom creations, we&apos;ve got
             you covered.
           </p>
-          <p className="text-sm italic text-primary/70 mt-2">
+          <p className="text-sm italic text-primary/70 mt-3">
             &ldquo;The purpose of art is washing the dust of daily life off our souls.&rdquo; — Pablo Picasso
           </p>
         </div>
@@ -53,17 +53,17 @@ export default function ServicesOverview() {
             return (
               <div
                 key={service.title}
-                className="bg-white rounded-xl p-8 text-center hover:shadow-lg transition-shadow duration-300 border border-gray-100"
+                className="gallery-card p-8 text-center"
               >
                 {/* Icon container */}
-                <div className="w-14 h-14 bg-primary-light rounded-xl flex items-center justify-center mx-auto mb-5">
+                <div className="w-14 h-14 bg-primary-light/40 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Icon
                     className="w-7 h-7 text-primary-dark"
                     aria-hidden="true"
                   />
                 </div>
 
-                <h3 className="text-xl font-semibold text-accent mb-3">
+                <h3 className="text-xl font-heading font-semibold text-foreground mb-3">
                   {service.title}
                 </h3>
                 <p className="text-muted leading-relaxed">

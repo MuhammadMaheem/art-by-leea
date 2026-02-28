@@ -11,25 +11,29 @@ import Button from "@/components/ui/Button";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-light via-white to-primary-light/30">
-      {/* Decorative background circle */}
+    <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-background to-primary-light/20">
+      {/* Decorative background elements */}
       <div
-        className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
+        className="absolute -top-24 -right-24 w-96 h-96 bg-primary/8 rounded-full blur-3xl"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl"
         aria-hidden="true"
       />
 
-      <Container className="py-20 md:py-32 relative z-10">
+      <Container className="py-24 md:py-36 relative z-10">
         <div className="max-w-3xl">
           {/* Small badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full border border-primary/20 mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface/80 rounded-full border border-primary/15 mb-8 backdrop-blur-sm">
             <Palette className="w-4 h-4 text-primary" aria-hidden="true" />
-            <span className="text-sm font-medium text-accent">
+            <span className="text-sm font-medium text-foreground tracking-wide">
               Handcrafted Art, Delivered to You
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-accent leading-tight mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-foreground leading-tight mb-6">
             Discover Art That{" "}
             <span className="text-primary">Speaks to You</span>
           </h1>
@@ -41,7 +45,7 @@ export default function HeroSection() {
             to your vision.
           </p>
 
-          <p className="text-sm italic text-primary/70 mb-8">
+          <p className="text-sm italic text-primary/70 mb-10">
             &ldquo;Every canvas is a journey all its own.&rdquo; — Helen Frankenthaler
           </p>
 

@@ -17,7 +17,7 @@ interface ArtworkGridProps {
 export default function ArtworkGrid({ artworks }: ArtworkGridProps) {
   if (artworks.length === 0) {
     return (
-      <div className="text-center py-16 bg-secondary/50 rounded-xl">
+      <div className="text-center py-20 bg-secondary/40 rounded-gallery">
         <p className="text-muted text-lg">
           No artworks found. Try adjusting your filters.
         </p>
@@ -26,7 +26,7 @@ export default function ArtworkGrid({ artworks }: ArtworkGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
       {artworks.map((artwork) => (
         <ArtworkCard key={artwork.id} artwork={artwork} />
       ))}

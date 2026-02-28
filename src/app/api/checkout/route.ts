@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
       : "03404677899";
 
     // Create the Order in Firestore
+    const { FieldValue: FV } = await import("firebase-admin/firestore");
     const orderData: Record<string, unknown> = {
       userId,
       userEmail,
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
       status: "pending_verification",
       receiptImageUrl,
       easypaisaNumber,
-      createdAt: new Date(),
+      createdAt: FV.serverTimestamp(),
     };
 
     if (promoCode) {

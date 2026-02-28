@@ -20,14 +20,14 @@ function CheckoutSuccessContent() {
   }, [clearCart]);
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-20 md:py-28">
       <Container>
         <div className="max-w-lg mx-auto text-center">
           <CheckCircle
-            className="w-20 h-20 text-green-500 mx-auto mb-6"
+            className="w-20 h-20 text-success mx-auto mb-6"
             aria-hidden="true"
           />
-          <h1 className="text-3xl font-bold text-accent mb-3">
+          <h1 className="text-3xl font-heading font-bold text-foreground mb-3">
             Order Submitted!
           </h1>
           <p className="text-muted text-lg mb-2">

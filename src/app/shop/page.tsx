@@ -63,11 +63,11 @@ export default function ShopPage() {
   }, [artworks, activeCategory, activeSort]);
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-14 md:py-20">
       <Container>
         {/* Page header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-accent mb-2">
+        <div className="mb-10">
+          <h1 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">
             Art Gallery
           </h1>
           <p className="text-muted text-lg">
@@ -88,7 +88,7 @@ export default function ShopPage() {
 
         {/* Loading state */}
         {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {Array.from({ length: 8 }).map((_, i) => (
               <ArtworkCardSkeleton key={i} />
             ))}

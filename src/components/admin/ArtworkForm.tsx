@@ -144,7 +144,7 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-      <h2 className="text-xl font-bold text-accent">
+      <h2 className="text-xl font-heading font-bold text-foreground">
         {isEdit ? "Edit Artwork" : "Add New Artwork"}
       </h2>
 
@@ -157,7 +157,7 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
       />
 
       <div className="w-full">
-        <label htmlFor="description" className="block text-sm font-medium text-accent mb-1.5">
+        <label htmlFor="description" className="block text-sm font-medium text-foreground mb-1.5">
           Description
         </label>
         <textarea
@@ -166,7 +166,7 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe the artwork..."
           rows={4}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-accent placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"
+          className="w-full px-4 py-3 rounded-gallery border border-primary/15 bg-secondary/50 text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"
           required
         />
       </div>
@@ -184,14 +184,14 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
         />
 
         <div className="w-full">
-          <label htmlFor="category" className="block text-sm font-medium text-accent mb-1.5">
+          <label htmlFor="category" className="block text-sm font-medium text-foreground mb-1.5">
             Category
           </label>
           <select
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-accent min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="w-full px-4 py-3 rounded-gallery border border-primary/15 bg-secondary/50 text-foreground min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             required
           >
             <option value="">Select a category</option>
@@ -228,14 +228,14 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
           />
           <span className={cn(
             "relative w-12 h-6 rounded-full transition-colors duration-200",
-            isFeatured ? "bg-primary" : "bg-gray-300"
+            isFeatured ? "bg-primary" : "bg-secondary-warm"
           )}>
             <span className={cn(
               "absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200",
               isFeatured ? "translate-x-7" : "translate-x-1"
             )} />
           </span>
-          <span className="text-sm font-medium text-accent">Show on homepage</span>
+          <span className="text-sm font-medium text-foreground">Show on homepage</span>
         </label>
 
         <label className="flex items-center gap-3 cursor-pointer">
@@ -247,35 +247,35 @@ export default function ArtworkForm({ artwork, onSuccess }: ArtworkFormProps) {
           />
           <span className={cn(
             "relative w-12 h-6 rounded-full transition-colors duration-200",
-            inStock ? "bg-primary" : "bg-gray-300"
+            inStock ? "bg-primary" : "bg-secondary-warm"
           )}>
             <span className={cn(
               "absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200",
               inStock ? "translate-x-7" : "translate-x-1"
             )} />
           </span>
-          <span className="text-sm font-medium text-accent">Available for purchase</span>
+          <span className="text-sm font-medium text-foreground">Available for purchase</span>
         </label>
       </div>
 
       {/* Image upload */}
       <div className="w-full">
-        <label className="block text-sm font-medium text-accent mb-1.5">
-          Artwork Image {!isEdit && <span className="text-red-500">*</span>}
+        <label className="block text-sm font-medium text-foreground mb-1.5">
+          Artwork Image {!isEdit && <span className="text-error">*</span>}
         </label>
 
         {imageUrl && (
-          <div className="relative w-40 h-40 rounded-lg overflow-hidden border border-gray-200 mb-3">
+          <div className="relative w-40 h-40 rounded-gallery overflow-hidden border border-secondary-warm mb-3">
             <Image src={imageUrl} alt="Preview" fill className="object-cover" sizes="160px" />
           </div>
         )}
 
         <div className="flex items-center gap-3">
           <label className={cn(
-            "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors min-h-touch",
+            "cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full transition-colors min-h-touch",
             uploading
-              ? "bg-gray-200 text-muted cursor-wait"
-              : "bg-secondary text-accent hover:bg-gray-200"
+              ? "bg-secondary-warm text-muted cursor-wait"
+              : "bg-secondary text-foreground hover:bg-secondary-warm"
           )}>
             {uploading ? (
               <>

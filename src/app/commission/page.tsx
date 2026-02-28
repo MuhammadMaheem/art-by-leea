@@ -33,11 +33,11 @@ const steps = [
 
 export default function CommissionPage() {
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-14 md:py-20">
       <Container>
         {/* Page header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-accent mb-3">
+        <div className="text-center mb-14">
+          <h1 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-3">
             Custom Art Commissions
           </h1>
           <p className="text-muted text-lg max-w-2xl mx-auto">
@@ -56,18 +56,18 @@ export default function CommissionPage() {
             return (
               <div
                 key={step.title}
-                className="text-center p-6 bg-secondary/50 rounded-xl"
+                className="text-center p-6 gallery-card"
               >
-                <div className="w-12 h-12 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 bg-primary-light/40 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Icon
                     className="w-6 h-6 text-primary-dark"
                     aria-hidden="true"
                   />
                 </div>
-                <div className="text-xs font-bold text-primary mb-1">
+                <div className="text-xs font-bold text-accent mb-1 tracking-wider">
                   Step {index + 1}
                 </div>
-                <h3 className="font-semibold text-accent mb-1">
+                <h3 className="font-heading font-semibold text-foreground mb-1">
                   {step.title}
                 </h3>
                 <p className="text-sm text-muted">{step.description}</p>
@@ -77,8 +77,8 @@ export default function CommissionPage() {
         </div>
 
         {/* Commission form */}
-        <div className="max-w-2xl mx-auto bg-white border border-gray-100 rounded-xl p-6 md:p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-accent mb-6">
+        <div className="max-w-2xl mx-auto gallery-card p-6 md:p-8">
+          <h2 className="text-2xl font-heading font-bold text-foreground mb-6">
             Request a Commission
           </h2>
           <CommissionForm />

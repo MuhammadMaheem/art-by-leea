@@ -103,11 +103,11 @@ export default function AdminSettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-accent mb-6">Commission Form Settings</h1>
+      <h1 className="text-2xl font-heading font-bold text-foreground mb-6">Commission Form Settings</h1>
 
       {/* Easypaisa Number */}
       <div className="mb-8">
-        <h3 className="text-lg font-semibold text-accent mb-3">Easypaisa Payment Number</h3>
+        <h3 className="text-lg font-heading font-semibold text-foreground mb-3">Easypaisa Payment Number</h3>
         <p className="text-sm text-muted mb-2">
           Customers will send payments to this number during checkout.
         </p>
@@ -115,7 +115,7 @@ export default function AdminSettingsPage() {
           type="text"
           value={easypaisaNumber}
           onChange={(e) => setEasypaisaNumber(e.target.value)}
-          className="w-full max-w-xs px-3 py-2 rounded-lg border border-gray-300 text-sm text-accent focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="w-full max-w-xs px-3 py-2 rounded-gallery border border-primary/15 bg-secondary/50 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           placeholder="03XXXXXXXXX"
         />
       </div>
@@ -123,7 +123,7 @@ export default function AdminSettingsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {/* Categories */}
         <div>
-          <h3 className="text-lg font-semibold text-accent mb-3">Art Categories</h3>
+          <h3 className="text-lg font-heading font-semibold text-foreground mb-3">Art Categories</h3>
           <div className="space-y-2">
             {categories.map((cat, i) => (
               <div key={i} className="flex items-center gap-2">
@@ -136,7 +136,7 @@ export default function AdminSettingsPage() {
                     setCategories(updated);
                     checkDuplicate(updated, e.target.value, i, "categories");
                   }}
-                  className="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm text-accent focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="flex-1 px-3 py-2 rounded-gallery border border-primary/15 bg-secondary/50 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="Category name"
                 />
                 <button
@@ -144,13 +144,13 @@ export default function AdminSettingsPage() {
                     setCategories(categories.filter((_, idx) => idx !== i));
                     setDupError(null);
                   }}
-                  className="p-1.5 rounded hover:bg-red-50 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-error/10 transition-colors cursor-pointer"
                   aria-label={`Remove category ${cat}`}
                 >
-                  <X className="w-4 h-4 text-red-500" />
+                  <X className="w-4 h-4 text-error" />
                 </button>
                 {dupError?.section === "categories" && dupError.index === i && (
-                  <span className="text-xs text-red-500">Duplicate</span>
+                  <span className="text-xs text-error">Duplicate</span>
                 )}
               </div>
             ))}
@@ -168,7 +168,7 @@ export default function AdminSettingsPage() {
 
         {/* Budget Ranges */}
         <div>
-          <h3 className="text-lg font-semibold text-accent mb-3">Budget Ranges</h3>
+          <h3 className="text-lg font-heading font-semibold text-foreground mb-3">Budget Ranges</h3>
           <div className="space-y-2">
             {budgetRanges.map((range, i) => (
               <div key={i} className="flex items-center gap-2">
@@ -181,7 +181,7 @@ export default function AdminSettingsPage() {
                     setBudgetRanges(updated);
                     checkDuplicate(updated, e.target.value, i, "budgetRanges");
                   }}
-                  className="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm text-accent focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="flex-1 px-3 py-2 rounded-gallery border border-primary/15 bg-secondary/50 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="Budget range"
                 />
                 <button
@@ -189,13 +189,13 @@ export default function AdminSettingsPage() {
                     setBudgetRanges(budgetRanges.filter((_, idx) => idx !== i));
                     setDupError(null);
                   }}
-                  className="p-1.5 rounded hover:bg-red-50 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-error/10 transition-colors cursor-pointer"
                   aria-label={`Remove budget range ${range}`}
                 >
-                  <X className="w-4 h-4 text-red-500" />
+                  <X className="w-4 h-4 text-error" />
                 </button>
                 {dupError?.section === "budgetRanges" && dupError.index === i && (
-                  <span className="text-xs text-red-500">Duplicate</span>
+                  <span className="text-xs text-error">Duplicate</span>
                 )}
               </div>
             ))}

@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
 
       // Create the Order in Firestore
       const adminDb = getAdminDb();
+      const { FieldValue: FV } = await import("firebase-admin/firestore");
       const orderData: Record<string, unknown> = {
         userId: session.metadata?.userId || "",
         userEmail: session.customer_email || session.customer_details?.email || "",
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
         total: (session.amount_total || 0) / 100,
         status: "paid",
         stripeSessionId: session.id,
-        createdAt: new Date(),
+        createdAt: FV.serverTimestamp(),
       };
 
       // Add promo code info if it was used

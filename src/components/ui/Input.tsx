@@ -27,7 +27,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {/* Label */}
         <label
           htmlFor={inputId}
-          className="block text-sm font-medium text-accent mb-1.5"
+          className="block text-sm font-medium text-foreground mb-1.5 tracking-wide"
         >
           {label}
         </label>
@@ -39,14 +39,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-describedby={error ? errorId : undefined}
           aria-invalid={!!error}
           className={cn(
-            "w-full px-4 py-3 rounded-lg border bg-white text-accent",
-            "placeholder:text-muted",
-            "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent",
-            "transition-colors duration-200",
-            "min-h-touch", // 44px minimum touch target
+            "w-full px-4 py-3 rounded-gallery border bg-secondary/50 text-foreground",
+            "placeholder:text-muted/60",
+            "focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep",
+            "transition-all duration-200",
+            "min-h-touch",
             error
-              ? "border-red-500 focus:ring-red-500"
-              : "border-gray-300 hover:border-gray-400",
+              ? "border-error focus:ring-error/40"
+              : "border-secondary-deep/50 hover:border-primary/40",
             className
           )}
           {...props}
@@ -54,7 +54,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {/* Error message */}
         {error && (
-          <p id={errorId} className="mt-1.5 text-sm text-red-600" role="alert">
+          <p id={errorId} className="mt-1.5 text-sm text-error" role="alert">
             {error}
           </p>
         )}

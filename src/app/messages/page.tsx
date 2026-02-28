@@ -100,17 +100,17 @@ function CustomerMessagesContent() {
   }
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-14 md:py-20">
       <Container>
-        <h1 className="text-2xl font-bold text-accent mb-2">Messages</h1>
-        <p className="text-sm italic text-primary/70 mb-6">
+        <h1 className="text-2xl font-heading font-bold text-foreground mb-2">Messages</h1>
+        <p className="text-sm italic text-primary/70 mb-8">
           &ldquo;Art is a collaboration between God and the artist, and the less the artist does the better.&rdquo; — André Gide
         </p>
 
         {threadId ? (
-          <div className="border border-gray-200 rounded-xl bg-white h-[500px] flex flex-col">
-            <div className="px-4 py-3 border-b border-gray-200">
-              <h2 className="font-semibold text-accent">Chat with Art By Leena</h2>
+          <div className="gallery-card h-[500px] flex flex-col overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-secondary-warm">
+              <h2 className="font-heading font-semibold text-foreground">Chat with Art By Leena</h2>
             </div>
             <div className="flex-1 min-h-0">
               <MessageThread threadId={threadId} />
@@ -118,8 +118,8 @@ function CustomerMessagesContent() {
           </div>
         ) : (
           <div className="max-w-lg mx-auto text-center py-12">
-            <MessageCircle className="w-16 h-16 text-muted mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-accent mb-2">
+            <MessageCircle className="w-16 h-16 text-muted/40 mx-auto mb-4" />
+            <h2 className="text-xl font-heading font-semibold text-foreground mb-2">
               Start a Conversation
             </h2>
             <p className="text-muted mb-6">
@@ -131,7 +131,7 @@ function CustomerMessagesContent() {
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleStartConversation(); } }}
                 placeholder="Type your first message..."
-                className="flex-1 px-4 py-3 rounded-lg border border-gray-300 bg-white text-accent placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="flex-1 px-4 py-3 rounded-full border border-primary/15 bg-secondary/50 text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep transition-colors"
               />
               <Button onClick={handleStartConversation} loading={sending} disabled={!newMessage.trim()}>
                 <Send className="w-4 h-4 mr-2" aria-hidden="true" />

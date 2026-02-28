@@ -35,8 +35,8 @@ export default function FilterBar({
               "min-h-touch cursor-pointer",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
               activeCategory === cat
-                ? "bg-primary text-accent"
-                : "bg-secondary text-muted hover:bg-gray-200"
+                ? "bg-primary text-white shadow-sm"
+                : "bg-secondary text-muted hover:bg-secondary-warm"
             )}
           >
             {cat}
@@ -48,7 +48,7 @@ export default function FilterBar({
       <select
         value={activeSort}
         onChange={(e) => onSortChange(e.target.value)}
-        className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-accent bg-white min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        className="px-4 py-2 rounded-full border border-primary/15 text-sm text-foreground bg-surface min-h-touch cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
         aria-label="Sort artworks"
       >
         {SORT_OPTIONS.map((opt) => (

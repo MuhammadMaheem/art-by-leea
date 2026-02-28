@@ -91,27 +91,36 @@ function ToastItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-[300px] max-w-[400px]",
+        "flex items-stretch rounded-gallery shadow-lg border min-w-[300px] max-w-[400px] overflow-hidden",
         "animate-in slide-in-from-right",
         toast.type === "success"
-          ? "bg-green-50 border-green-200 text-green-800"
-          : "bg-red-50 border-red-200 text-red-800"
+          ? "bg-surface border-success/20"
+          : "bg-surface border-error/20"
       )}
       role="alert"
     >
-      {toast.type === "success" ? (
-        <CheckCircle className="w-5 h-5 shrink-0" aria-hidden="true" />
-      ) : (
-        <XCircle className="w-5 h-5 shrink-0" aria-hidden="true" />
-      )}
-      <p className="text-sm font-medium flex-1">{toast.message}</p>
-      <button
-        onClick={onClose}
-        className="cursor-pointer p-1 rounded hover:bg-black/10 transition-colors min-h-touch min-w-[28px] flex items-center justify-center"
-        aria-label="Dismiss notification"
-      >
-        <X className="w-4 h-4" aria-hidden="true" />
-      </button>
+      {/* Left accent bar */}
+      <div
+        className={cn(
+          "w-1 shrink-0",
+          toast.type === "success" ? "bg-success" : "bg-error"
+        )}
+      />
+      <div className="flex items-center gap-3 px-4 py-3 flex-1">
+        {toast.type === "success" ? (
+          <CheckCircle className="w-5 h-5 shrink-0 text-success" aria-hidden="true" />
+        ) : (
+          <XCircle className="w-5 h-5 shrink-0 text-error" aria-hidden="true" />
+        )}
+        <p className="text-sm font-medium flex-1 text-foreground">{toast.message}</p>
+        <button
+          onClick={onClose}
+          className="cursor-pointer p-1 rounded-full hover:bg-secondary transition-colors min-w-[28px] flex items-center justify-center"
+          aria-label="Dismiss notification"
+        >
+          <X className="w-4 h-4 text-muted" aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 }

@@ -2,21 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── CSS Custom Properties ── */
+/* ── CSS Custom Properties — Art Gallery Design System ── */
+
+/* ─ Light Theme (default) ─ */
 :root {
-  --primary: #B57EDC;
-  --primary-light: #E6E6FA;
-  --primary-dark: #9B59B6;
-  --accent: #1F2937;
+  --primary: #9B8EC4;
+  --primary-light: #C4B5E8;
+  --primary-dark: #6B5A9E;
+  --secondary: #F5ECD7;
+  --secondary-warm: #EDE0C4;
+  --secondary-deep: #D4C4A0;
+  --accent: #C9A84C;
+  --foreground: #2C2C3E;
+  --background: #FAF7F2;
   --surface: #FFFFFF;
-  --secondary: #F3F4F6;
   --muted: #6B7280;
+  --error: #D4817A;
+  --success: #8AAF92;
+  --text-light: #FAF6F0;
+}
+
+/* ─ Dark Theme — Gallery After Hours ─ */
+.dark {
+  --primary: #B8A9E3;
+  --primary-light: #9B8EC4;
+  --primary-dark: #D4C8F0;
+  --secondary: #3D3450;
+  --secondary-warm: #4A3D60;
+  --secondary-deep: #2E2640;
+  --accent: #C9A84C;
+  --foreground: #EDE8F5;
+  --background: #1A1825;
+  --surface: #242133;
+  --muted: #9E97B8;
+  --error: #D4817A;
+  --success: #8AAF92;
+  --text-light: #EDE8F5;
 }
 
 /* ── Base Styles ── */
 body {
-  color: var(--accent);
-  background: var(--surface);
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* ── Smooth theme transition (respects reduced motion) ── */
+@media (prefers-reduced-motion: no-preference) {
+  *,
+  *::before,
+  *::after {
+    transition: background-color 300ms ease, color 200ms ease,
+      border-color 200ms ease, box-shadow 200ms ease;
+  }
+  /* Exclude elements that shouldn't transition */
+  img, video, canvas, svg, [data-no-transition] {
+    transition: none !important;
+  }
 }
 
 /* ── Accessibility: Respect reduced motion preference ── */
@@ -31,7 +72,7 @@ body {
   }
 }
 
-/* ── Utility: Hide scrollbar but keep functionality ── */
+/* ── Art Gallery Utilities ── */
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -40,4 +81,107 @@ body {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Frosted glass effect for sticky navbar */
+  .glass-nav {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-color: rgba(250, 247, 242, 0.85);
+    border-bottom: 1px solid rgba(155, 142, 196, 0.15);
+  }
+  .dark .glass-nav {
+    background-color: rgba(26, 24, 37, 0.85);
+    border-bottom: 1px solid rgba(58, 53, 80, 0.6);
+  }
+
+  /* Gallery-style framed card */
+  .gallery-card {
+    background: var(--surface);
+    border: 1px solid rgba(155, 142, 196, 0.2);
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(43, 44, 62, 0.06), 0 1px 3px rgba(43, 44, 62, 0.04);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .gallery-card:hover {
+    box-shadow: 0 8px 30px rgba(155, 142, 196, 0.15), 0 2px 8px rgba(43, 44, 62, 0.06);
+    transform: translateY(-2px);
+  }
+  .dark .gallery-card {
+    border-color: rgba(58, 53, 80, 0.6);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.15);
+  }
+  .dark .gallery-card:hover {
+    box-shadow: 0 8px 30px rgba(155, 142, 196, 0.12), 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Curator-style label (uppercase spaced) */
+  .art-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Brushstroke-inspired decorative divider */
+  .brushstroke-divider {
+    position: relative;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--primary-light) 15%,
+      var(--primary) 50%,
+      var(--primary-light) 85%,
+      transparent 100%
+    );
+    border-radius: 2px;
+    opacity: 0.5;
+  }
+
+  /* Watercolor-style gradient background */
+  .watercolor-bg {
+    background: linear-gradient(
+      135deg,
+      rgba(155, 142, 196, 0.08) 0%,
+      rgba(245, 236, 215, 0.12) 40%,
+      rgba(250, 247, 242, 0.05) 70%,
+      rgba(201, 168, 76, 0.05) 100%
+    );
+  }
+  .dark .watercolor-bg {
+    background: linear-gradient(
+      135deg,
+      rgba(184, 169, 227, 0.06) 0%,
+      rgba(61, 52, 80, 0.1) 40%,
+      rgba(26, 24, 37, 0.05) 70%,
+      rgba(201, 168, 76, 0.04) 100%
+    );
+  }
+}
+
+/* ── Custom selection color ── */
+::selection {
+  background-color: rgba(155, 142, 196, 0.3);
+  color: var(--foreground);
+}
+.dark ::selection {
+  background-color: rgba(184, 169, 227, 0.35);
+}
+
+/* ── Dark theme scrollbar ── */
+.dark {
+  scrollbar-color: #6B5A9E #1A1825;
+}
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #1A1825;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #6B5A9E;
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #9B8EC4;
 }

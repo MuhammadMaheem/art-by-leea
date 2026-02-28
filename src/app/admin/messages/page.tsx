@@ -24,11 +24,11 @@ function MessagesContent() {
 
   return (
     <Container>
-      <h1 className="text-2xl font-bold text-accent mb-6">Messages</h1>
+      <h1 className="text-2xl font-heading font-bold text-foreground mb-6">Messages</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
         {/* Thread list */}
-        <div className="lg:col-span-1 border border-gray-200 rounded-xl overflow-y-auto bg-white">
+        <div className="lg:col-span-1 border border-secondary-warm rounded-gallery overflow-y-auto bg-surface">
           <InboxList
             selectedThreadId={selectedThread?.id || null}
             onSelectThread={setSelectedThread}
@@ -36,11 +36,11 @@ function MessagesContent() {
         </div>
 
         {/* Chat view */}
-        <div className="lg:col-span-2 border border-gray-200 rounded-xl bg-white flex flex-col">
+        <div className="lg:col-span-2 border border-secondary-warm rounded-gallery bg-surface flex flex-col">
           {selectedThread ? (
             <>
-              <div className="px-4 py-3 border-b border-gray-200">
-                <h2 className="font-semibold text-accent">{selectedThread.customerName}</h2>
+              <div className="px-4 py-3 border-b border-secondary-warm">
+                <h2 className="font-heading font-semibold text-foreground">{selectedThread.customerName}</h2>
                 <p className="text-xs text-muted">{selectedThread.customerEmail}</p>
               </div>
               <div className="flex-1 min-h-0">

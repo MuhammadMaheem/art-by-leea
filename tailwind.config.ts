@@ -6,30 +6,43 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
-      /* ── Custom Lavender-based color palette ── */
+      /* ── Art Gallery Color Palette (mapped to CSS variables for theming) ── */
       colors: {
         primary: {
-          DEFAULT: "#B57EDC", // Lavender — main brand color
-          light: "#E6E6FA",  // Light lavender for backgrounds/highlights
-          dark: "#9B59B6",   // Darker lavender for hover states
+          DEFAULT: "var(--primary)",
+          light: "var(--primary-light)",
+          dark: "var(--primary-dark)",
         },
-        secondary: "#F3F4F6", // Light Gray — cards, secondary backgrounds
-        accent: "#1F2937",    // Charcoal — primary text color (WCAG AA on white)
-        surface: "#FFFFFF",   // White — page background
-        muted: "#6B7280",    // Gray-500 — secondary text, placeholders
+        secondary: {
+          DEFAULT: "var(--secondary)",
+          warm: "var(--secondary-warm)",
+          deep: "var(--secondary-deep)",
+        },
+        accent: "var(--accent)",
+        foreground: "var(--foreground)",
+        background: "var(--background)",
+        surface: "var(--surface)",
+        muted: "var(--muted)",
+        error: "var(--error)",
+        success: "var(--success)",
+        "text-light": "var(--text-light)",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "monospace"],
+        heading: ["var(--font-playfair)", "Playfair Display", "Cormorant Garamond", "serif"],
+        sans: ["var(--font-dm-sans)", "DM Sans", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        gallery: "14px",
       },
       /* ── Ensures consistent spacing for touch targets ── */
       minHeight: {
-        touch: "44px",
+        touch: "48px",
       },
       minWidth: {
-        touch: "44px",
+        touch: "48px",
       },
     },
   },

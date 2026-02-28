@@ -49,7 +49,7 @@ export default function InboxList({ selectedThreadId, onSelectThread }: InboxLis
   }
 
   return (
-    <div className="divide-y divide-gray-100">
+    <div className="divide-y divide-secondary-warm">
       {threads.map((thread) => {
         const unread = getUnread(thread);
         const isSelected = selectedThreadId === thread.id;
@@ -58,16 +58,16 @@ export default function InboxList({ selectedThreadId, onSelectThread }: InboxLis
             key={thread.id}
             onClick={() => onSelectThread(thread)}
             className={cn(
-              "w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer",
-              isSelected && "bg-primary-light/40"
+              "w-full text-left px-4 py-3.5 hover:bg-secondary/50 transition-all cursor-pointer",
+              isSelected && "bg-primary-light/30 border-r-2 border-primary"
             )}
           >
             <div className="flex items-center justify-between mb-1">
-              <span className="font-medium text-accent text-sm truncate">
+              <span className="font-medium text-foreground text-sm truncate">
                 {thread.customerName}
               </span>
               {unread > 0 && (
-                <span className="bg-primary text-accent text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shrink-0">
+                <span className="bg-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shrink-0">
                   {unread}
                 </span>
               )}

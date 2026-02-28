@@ -70,10 +70,10 @@ export default function ProductDetailPage() {
   // Loading state
   if (loading) {
     return (
-      <section className="py-12 md:py-16">
+      <section className="py-14 md:py-20">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            <Skeleton className="aspect-[3/4] w-full rounded-xl" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
+            <Skeleton className="aspect-[3/4] w-full rounded-gallery" />
             <div className="space-y-4">
               <Skeleton className="h-8 w-3/4" />
               <Skeleton className="h-6 w-1/4" />
@@ -91,10 +91,10 @@ export default function ProductDetailPage() {
   // Not found state
   if (!artwork) {
     return (
-      <section className="py-12 md:py-16">
+      <section className="py-14 md:py-20">
         <Container>
           <div className="text-center py-20">
-            <h1 className="text-2xl font-bold text-accent mb-4">
+            <h1 className="text-2xl font-heading font-bold text-foreground mb-4">
               Artwork Not Found
             </h1>
             <p className="text-muted mb-6">
@@ -110,20 +110,20 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-14 md:py-20">
       <Container>
         {/* Back button */}
         <Link
           href="/shop"
-          className="inline-flex items-center gap-2 text-muted hover:text-accent transition-colors mb-8 cursor-pointer"
+          className="inline-flex items-center gap-2 text-muted hover:text-primary transition-colors mb-10 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           Back to Gallery
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
           {/* Left: Artwork image */}
-          <div className="aspect-[3/4] relative rounded-xl overflow-hidden bg-secondary">
+          <div className="aspect-[3/4] relative rounded-gallery overflow-hidden bg-secondary shadow-md">
             <Image
               src={artwork.imageUrl}
               alt={artwork.title}
@@ -136,11 +136,11 @@ export default function ProductDetailPage() {
 
           {/* Right: Details panel */}
           <div className="flex flex-col">
-            <h1 className="text-3xl md:text-4xl font-bold text-accent mb-2">
+            <h1 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-3">
               {artwork.title}
             </h1>
 
-            <p className="text-2xl font-bold text-primary mb-6">
+            <p className="text-2xl font-bold text-accent mb-6">
               {formatPrice(artwork.price)}
             </p>
 
@@ -148,21 +148,21 @@ export default function ProductDetailPage() {
             <div className="space-y-3 mb-6">
               <div className="flex gap-2">
                 <span className="text-muted font-medium w-24">Category:</span>
-                <span className="text-accent">{artwork.category}</span>
+                <span className="text-foreground">{artwork.category}</span>
               </div>
               <div className="flex gap-2">
                 <span className="text-muted font-medium w-24">Medium:</span>
-                <span className="text-accent">{artwork.medium}</span>
+                <span className="text-foreground">{artwork.medium}</span>
               </div>
               <div className="flex gap-2">
                 <span className="text-muted font-medium w-24">Size:</span>
-                <span className="text-accent">{artwork.dimensions}</span>
+                <span className="text-foreground">{artwork.dimensions}</span>
               </div>
               <div className="flex gap-2">
                 <span className="text-muted font-medium w-24">Status:</span>
                 <span
                   className={
-                    artwork.inStock ? "text-green-600" : "text-red-600"
+                    artwork.inStock ? "text-success" : "text-error"
                   }
                 >
                   {artwork.inStock ? "In Stock" : "Sold Out"}
@@ -172,7 +172,7 @@ export default function ProductDetailPage() {
 
             {/* Description */}
             <div className="mb-8">
-              <h2 className="text-lg font-semibold text-accent mb-2">
+              <h2 className="text-lg font-heading font-semibold text-foreground mb-2">
                 About This Piece
               </h2>
               <p className="text-muted leading-relaxed">

@@ -36,12 +36,12 @@ export default function FeaturedArtworks() {
   }, []);
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-20 md:py-28">
       <Container>
         {/* Section header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-12">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-accent mb-2">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">
               Featured Artworks
             </h2>
             <p className="text-muted text-lg">
@@ -50,7 +50,7 @@ export default function FeaturedArtworks() {
           </div>
           <Link
             href="/shop"
-            className="inline-flex items-center gap-1 text-primary hover:text-primary-dark font-medium mt-4 sm:mt-0 cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1.5 text-primary hover:text-primary-dark font-medium mt-4 sm:mt-0 cursor-pointer transition-colors"
           >
             View All
             <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -59,7 +59,7 @@ export default function FeaturedArtworks() {
 
         {/* Loading skeletons */}
         {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {Array.from({ length: 6 }).map((_, i) => (
               <ArtworkCardSkeleton key={i} />
             ))}
@@ -68,29 +68,29 @@ export default function FeaturedArtworks() {
 
         {/* Artworks grid */}
         {!loading && artworks.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {artworks.map((artwork) => (
               <Link
                 key={artwork.id}
                 href={`/shop/${artwork.id}`}
-                className="group rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer bg-white"
+                className="group gallery-card cursor-pointer"
               >
                 {/* Image with aspect ratio container */}
-                <div className="aspect-[3/4] relative overflow-hidden bg-secondary">
+                <div className="aspect-[3/4] relative overflow-hidden bg-secondary rounded-t-gallery">
                   <Image
                     src={artwork.imageUrl}
                     alt={artwork.title}
                     fill
-                    className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
                 {/* Card text */}
-                <div className="p-4">
-                  <h3 className="font-semibold text-accent group-hover:text-primary transition-colors">
+                <div className="p-5">
+                  <h3 className="font-heading font-semibold text-foreground group-hover:text-primary transition-colors">
                     {artwork.title}
                   </h3>
-                  <p className="text-primary font-bold mt-1">
+                  <p className="text-accent font-bold mt-1.5">
                     {formatPrice(artwork.price)}
                   </p>
                 </div>
@@ -101,7 +101,7 @@ export default function FeaturedArtworks() {
 
         {/* Empty state — shown before data is seeded */}
         {!loading && artworks.length === 0 && (
-          <div className="text-center py-16 bg-secondary/50 rounded-xl">
+          <div className="text-center py-20 bg-secondary/40 rounded-gallery">
             <p className="text-muted text-lg mb-4">
               No featured artworks yet. Seed the database to see artwork here.
             </p>

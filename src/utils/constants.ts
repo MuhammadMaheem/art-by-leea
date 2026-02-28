@@ -61,3 +61,21 @@ export const ORDER_STATUSES = [
   "delivered",
   "cancelled",
 ] as const;
+
+/** Art-themed micro-copy for empty states */
+export const EMPTY_STATE_MESSAGES = {
+  cart: "Your canvas is empty — time to discover something beautiful.",
+  orders: "No masterpieces collected yet. Your gallery awaits!",
+  commissions: "No commissions requested yet. Let's create something unique.",
+  messages: "No conversations yet. Reach out — great art starts with a dialogue.",
+  artworks: "The gallery is being curated. Check back soon!",
+  notifications: "All caught up — no new brushstrokes to report.",
+  general: "Nothing here yet — every collection starts with the first piece.",
+} as const;
+
+/** Art-themed loading messages */
+export const LOADING_MESSAGES = {
+  gallery: "Preparing the gallery...",
+  artwork: "Unveiling the masterpiece...",
+  default: "Curating your experience...",
+} as const;

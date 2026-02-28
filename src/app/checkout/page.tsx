@@ -167,68 +167,68 @@ function CheckoutContent() {
   if (items.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-20">
+    <section className="py-14 md:py-20">
       <Container>
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold text-accent mb-2">Checkout</h1>
-          <p className="text-muted mb-8">
+          <h1 className="text-3xl font-heading font-bold text-foreground mb-2">Checkout</h1>
+          <p className="text-muted mb-10">
             Complete your payment via Easypaisa and upload the receipt.
           </p>
 
           {/* Order Summary */}
-          <div className="bg-secondary/50 rounded-xl p-5 mb-8">
-            <h2 className="font-semibold text-accent mb-3">Order Summary</h2>
+          <div className="gallery-card p-6 mb-8">
+            <h2 className="font-heading font-semibold text-foreground mb-3">Order Summary</h2>
             <div className="space-y-2 text-sm">
               {items.map((item) => (
                 <div key={item.id} className="flex justify-between">
                   <span className="text-muted">
                     {item.title} × {item.quantity}
                   </span>
-                  <span className="text-accent font-medium">
+                  <span className="text-foreground font-medium">
                     {formatPrice(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
               {promoCode && (
-                <div className="flex justify-between text-green-600">
+                <div className="flex justify-between text-success">
                   <span>Promo: {promoCode} (-{discountPercent}%)</span>
                   <span>-{formatPrice(discount)}</span>
                 </div>
               )}
-              <hr className="border-gray-200" />
+              <hr className="border-secondary-warm" />
               <div className="flex justify-between text-lg font-bold">
-                <span className="text-accent">Total</span>
-                <span className="text-primary">{formatPrice(total)}</span>
+                <span className="text-foreground">Total</span>
+                <span className="text-accent">{formatPrice(total)}</span>
               </div>
             </div>
           </div>
 
           {/* Easypaisa Instructions */}
-          <div className="bg-green-50 border border-green-200 rounded-xl p-5 mb-8">
-            <h2 className="font-semibold text-green-800 mb-3">
+          <div className="bg-success/10 border border-success/20 rounded-gallery p-6 mb-8">
+            <h2 className="font-heading font-semibold text-foreground mb-3">
               Payment via Easypaisa
             </h2>
-            <p className="text-sm text-green-700 mb-3">
-              Send <strong>{formatPrice(total)}</strong> to the following
+            <p className="text-sm text-muted mb-3">
+              Send <strong className="text-foreground">{formatPrice(total)}</strong> to the following
               Easypaisa number:
             </p>
-            <div className="flex items-center gap-3 bg-white rounded-lg px-4 py-3 border border-green-300">
-              <span className="text-xl font-bold text-green-800 tracking-wider">
+            <div className="flex items-center gap-3 bg-surface rounded-gallery px-4 py-3 border border-success/20">
+              <span className="text-xl font-bold text-foreground tracking-wider">
                 {easypaisaNumber}
               </span>
               <button
                 onClick={handleCopy}
-                className="ml-auto p-2 rounded-lg hover:bg-green-100 transition-colors cursor-pointer"
+                className="ml-auto p-2 rounded-full hover:bg-secondary transition-all cursor-pointer"
                 aria-label="Copy Easypaisa number"
               >
                 {copied ? (
-                  <Check className="w-5 h-5 text-green-600" />
+                  <Check className="w-5 h-5 text-success" />
                 ) : (
-                  <Copy className="w-5 h-5 text-green-600" />
+                  <Copy className="w-5 h-5 text-muted" />
                 )}
               </button>
             </div>
-            <p className="text-xs text-green-600 mt-2">
+            <p className="text-xs text-muted mt-2">
               After sending payment, take a screenshot of the confirmation and
               upload it below.
             </p>
@@ -236,14 +236,14 @@ function CheckoutContent() {
 
           {/* Receipt Upload */}
           <div className="mb-8">
-            <h2 className="font-semibold text-accent mb-3">
+            <h2 className="font-heading font-semibold text-foreground mb-3">
               Upload Payment Receipt
             </h2>
             <label
-              className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-8 cursor-pointer transition-colors ${
+              className={`flex flex-col items-center justify-center border-2 border-dashed rounded-gallery p-8 cursor-pointer transition-all ${
                 receiptUrl
-                  ? "border-green-400 bg-green-50"
-                  : "border-gray-300 hover:border-primary hover:bg-secondary/30"
+                  ? "border-success bg-success/5"
+                  : "border-primary/20 hover:border-primary hover:bg-secondary/30"
               }`}
             >
               {uploading ? (
@@ -255,9 +255,9 @@ function CheckoutContent() {
                     alt="Payment receipt"
                     width={200}
                     height={300}
-                    className="mx-auto rounded-lg mb-3 object-contain max-h-60"
+                    className="mx-auto rounded-gallery mb-3 object-contain max-h-60"
                   />
-                  <p className="text-sm text-green-700">
+                  <p className="text-sm text-success">
                     Receipt uploaded — click to replace
                   </p>
                 </div>

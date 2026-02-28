@@ -21,9 +21,9 @@ export default function CartItem({ item }: CartItemProps) {
   const removeItem = useCartStore((s) => s.removeItem);
 
   return (
-    <div className="flex gap-4 py-4 border-b border-gray-100">
+    <div className="flex gap-4 py-5 border-b border-secondary-warm">
       {/* Thumbnail */}
-      <div className="w-20 h-20 sm:w-24 sm:h-24 relative rounded-lg overflow-hidden bg-secondary shrink-0">
+      <div className="w-20 h-20 sm:w-24 sm:h-24 relative rounded-gallery overflow-hidden bg-secondary shrink-0">
         <Image
           src={item.imageUrl}
           alt={item.title}
@@ -35,9 +35,9 @@ export default function CartItem({ item }: CartItemProps) {
 
       {/* Details */}
       <div className="flex-1 min-w-0">
-        <h3 className="font-semibold text-accent truncate">{item.title}</h3>
+        <h3 className="font-heading font-semibold text-foreground truncate">{item.title}</h3>
         <p className="text-sm text-muted">{item.medium}</p>
-        <p className="text-primary font-bold mt-1">
+        <p className="text-accent font-bold mt-1">
           {formatPrice(item.price)}
         </p>
       </div>
@@ -48,17 +48,17 @@ export default function CartItem({ item }: CartItemProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-            className="cursor-pointer p-1.5 rounded-md border border-gray-300 hover:bg-secondary transition-colors min-h-touch min-w-[32px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+            className="cursor-pointer p-1.5 rounded-full border border-primary/15 hover:bg-secondary transition-all min-h-touch min-w-[32px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
             aria-label={`Decrease quantity of ${item.title}`}
           >
             <Minus className="w-4 h-4" aria-hidden="true" />
           </button>
-          <span className="w-8 text-center font-medium text-accent">
+          <span className="w-8 text-center font-medium text-foreground">
             {item.quantity}
           </span>
           <button
             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-            className="cursor-pointer p-1.5 rounded-md border border-gray-300 hover:bg-secondary transition-colors min-h-touch min-w-[32px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+            className="cursor-pointer p-1.5 rounded-full border border-primary/15 hover:bg-secondary transition-all min-h-touch min-w-[32px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
             aria-label={`Increase quantity of ${item.title}`}
           >
             <Plus className="w-4 h-4" aria-hidden="true" />
@@ -68,7 +68,7 @@ export default function CartItem({ item }: CartItemProps) {
         {/* Remove button */}
         <button
           onClick={() => removeItem(item.id)}
-          className="cursor-pointer p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors min-h-touch min-w-touch flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+          className="cursor-pointer p-2 text-error hover:text-error/80 hover:bg-error/10 rounded-full transition-all min-h-touch min-w-touch flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-1"
           aria-label={`Remove ${item.title} from cart`}
         >
           <Trash2 className="w-4 h-4" aria-hidden="true" />

@@ -103,25 +103,25 @@ function ProfileContent() {
   };
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-14 md:py-20">
       <Container>
         {/* Profile header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-primary-light rounded-full flex items-center justify-center">
-              <User className="w-8 h-8 text-primary-dark" aria-hidden="true" />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-12">
+          <div className="flex items-center gap-5">
+            <div className="w-18 h-18 bg-primary-light/40 rounded-full flex items-center justify-center ring-2 ring-primary/20">
+              <User className="w-9 h-9 text-primary" aria-hidden="true" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-accent">
+              <h1 className="text-2xl font-heading font-bold text-foreground">
                 {profile?.displayName || user?.displayName || "User"}
               </h1>
-              <p className="text-muted">{user?.email}</p>
+              <p className="text-muted text-sm tracking-wide">{user?.email}</p>
             </div>
           </div>
           <Button
             variant="ghost"
             onClick={handleSignOut}
-            className="mt-4 sm:mt-0 text-red-600 hover:bg-red-50"
+            className="mt-4 sm:mt-0 text-error hover:bg-error/10"
           >
             <LogOut className="w-4 h-4 mr-2" aria-hidden="true" />
             Sign Out
@@ -130,10 +130,10 @@ function ProfileContent() {
 
         {/* Admin view-mode toggle */}
         {profile?.role === "admin" && (
-          <div className="mb-8 rounded-lg border border-yellow-200 bg-yellow-50 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="mb-8 rounded-gallery border border-accent/30 bg-accent/10 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <p className="font-medium text-yellow-800">Admin View Mode</p>
-              <p className="text-sm text-yellow-700">
+              <p className="font-heading font-medium text-foreground">Admin View Mode</p>
+              <p className="text-sm text-muted">
                 {viewMode === "admin"
                   ? "You are viewing the site as an admin. Purchasing is disabled."
                   : "You are viewing the site as a customer. You can browse and purchase."}
@@ -141,7 +141,7 @@ function ProfileContent() {
             </div>
             <button
               onClick={() => setViewMode(viewMode === "admin" ? "customer" : "admin")}
-              className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-yellow-300 bg-white text-yellow-800 font-medium hover:bg-yellow-100 transition-colors min-h-touch"
+              className="cursor-pointer inline-flex items-center gap-2 px-5 py-2 rounded-full border border-accent/30 bg-surface text-foreground font-medium hover:bg-accent/10 transition-colors min-h-touch"
             >
               Switch to {viewMode === "admin" ? "Customer" : "Admin"} View
             </button>
@@ -152,7 +152,7 @@ function ProfileContent() {
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <Package className="w-5 h-5 text-primary" aria-hidden="true" />
-            <h2 className="text-xl font-bold text-accent">My Orders</h2>
+            <h2 className="text-xl font-heading font-bold text-foreground">My Orders</h2>
           </div>
 
           {loading ? (
@@ -162,7 +162,7 @@ function ProfileContent() {
               ))}
             </div>
           ) : orders.length === 0 ? (
-            <p className="text-muted bg-secondary/50 rounded-xl p-6 text-center">
+            <p className="text-muted bg-secondary/50 rounded-gallery p-6 text-center">
               No orders yet. Start browsing our gallery!
             </p>
           ) : (
@@ -170,16 +170,16 @@ function ProfileContent() {
               {orders.map((order) => (
                 <div
                   key={order.id}
-                  className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+                  className="gallery-card p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                 >
                   <div>
-                    <p className="font-medium text-accent">
+                    <p className="font-medium text-foreground">
                       Order #{order.id.slice(0, 8)}
                     </p>
                     <p className="text-sm text-muted">
                       {order.items.length} item
                       {order.items.length !== 1 ? "s" : ""} &middot;{" "}
-                      {formatPrice(order.total)}
+                      <span className="text-accent font-medium">{formatPrice(order.total)}</span>
                     </p>
                   </div>
                   <Badge status={order.status} />
@@ -193,7 +193,7 @@ function ProfileContent() {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <PenTool className="w-5 h-5 text-primary" aria-hidden="true" />
-            <h2 className="text-xl font-bold text-accent">
+            <h2 className="text-xl font-heading font-bold text-foreground">
               My Commission Requests
             </h2>
           </div>
@@ -205,7 +205,7 @@ function ProfileContent() {
               ))}
             </div>
           ) : commissions.length === 0 ? (
-            <p className="text-muted bg-secondary/50 rounded-xl p-6 text-center">
+            <p className="text-muted bg-secondary/50 rounded-gallery p-6 text-center">
               No commission requests yet. Request a custom piece!
             </p>
           ) : (
@@ -213,10 +213,10 @@ function ProfileContent() {
               {commissions.map((commission) => (
                 <div
                   key={commission.id}
-                  className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+                  className="gallery-card p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
                 >
                   <div>
-                    <p className="font-medium text-accent">
+                    <p className="font-medium text-foreground">
                       {commission.category} — {commission.budget}
                     </p>
                     <p className="text-sm text-muted line-clamp-1">
@@ -234,12 +234,12 @@ function ProfileContent() {
         <div className="mt-12">
           <div className="flex items-center gap-2 mb-4">
             <Lock className="w-5 h-5 text-primary" aria-hidden="true" />
-            <h2 className="text-xl font-bold text-accent">Change Password</h2>
+            <h2 className="text-xl font-heading font-bold text-foreground">Change Password</h2>
           </div>
 
           <form
             onSubmit={handleChangePassword}
-            className="bg-white border border-gray-100 rounded-xl p-6 max-w-md space-y-4"
+            className="gallery-card p-6 max-w-md space-y-4"
           >
             <Input
               label="Current Password"

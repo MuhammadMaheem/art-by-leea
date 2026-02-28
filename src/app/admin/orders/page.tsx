@@ -66,11 +66,11 @@ export default function AdminOrdersPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-accent">Orders</h1>
+        <h1 className="text-2xl font-heading font-bold text-foreground">Orders</h1>
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="h-20 bg-secondary rounded-xl animate-pulse"
+            className="h-20 bg-secondary rounded-gallery animate-pulse"
           />
         ))}
       </div>
@@ -79,7 +79,7 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-accent">
+      <h1 className="text-2xl font-heading font-bold text-foreground">
         Orders ({orders.length})
       </h1>
 
@@ -90,12 +90,12 @@ export default function AdminOrdersPage() {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="bg-surface border border-secondary rounded-xl p-5"
+              className="gallery-card p-5"
             >
               {/* Order header row */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-accent text-sm">
+                  <p className="font-medium text-foreground text-sm">
                     Order #{order.id?.slice(0, 8)}
                   </p>
                   <p className="text-xs text-muted mt-0.5">
@@ -144,7 +144,7 @@ export default function AdminOrdersPage() {
                     handleStatusChange(order.id!, e.target.value)
                   }
                   disabled={updatingId === order.id}
-                  className="text-sm border border-secondary rounded-lg px-3 py-1.5 bg-surface text-accent focus:outline-none focus:ring-2 focus:ring-primary min-h-touch cursor-pointer disabled:opacity-50"
+                  className="text-sm border border-primary/15 rounded-gallery px-3 py-1.5 bg-secondary/50 text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-touch cursor-pointer disabled:opacity-50"
                 >
                   {ORDER_STATUSES.map((status) => (
                     <option key={status} value={status}>

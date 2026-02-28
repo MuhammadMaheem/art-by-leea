@@ -89,17 +89,17 @@ export default function AdminArtworksPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-accent mb-6">Artworks</h1>
+      <h1 className="text-2xl font-heading font-bold text-foreground mb-6">Artworks</h1>
 
       {/* Tab bar */}
-      <div className="flex gap-2 mb-6 border-b border-gray-200">
+      <div className="flex gap-2 mb-6 border-b border-secondary-warm">
         <button
           onClick={() => { setView("artworks"); setSelectedArtwork(null); }}
           className={cn(
             "px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer border-b-2 -mb-px",
             view === "artworks"
               ? "border-primary text-primary"
-              : "border-transparent text-muted hover:text-accent"
+              : "border-transparent text-muted hover:text-foreground"
           )}
         >
           All Artworks
@@ -110,7 +110,7 @@ export default function AdminArtworksPage() {
             "px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer border-b-2 -mb-px flex items-center gap-1.5",
             view === "add"
               ? "border-primary text-primary"
-              : "border-transparent text-muted hover:text-accent"
+              : "border-transparent text-muted hover:text-foreground"
           )}
         >
           <Plus className="w-4 h-4" />
@@ -132,14 +132,14 @@ export default function AdminArtworksPage() {
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
             </div>
           ) : artworks.length === 0 ? (
-            <div className="text-center py-12 bg-secondary/50 rounded-xl">
+            <div className="text-center py-12 bg-secondary/50 rounded-gallery">
               <p className="text-muted">No artworks yet. Add your first artwork!</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-200 text-left">
+                  <tr className="border-b border-secondary-warm text-left">
                     <th className="py-3 px-2 font-medium text-muted w-12"></th>
                     <th className="py-3 px-2 font-medium text-muted">Title</th>
                     <th className="py-3 px-2 font-medium text-muted hidden sm:table-cell">Category</th>
@@ -151,9 +151,9 @@ export default function AdminArtworksPage() {
                 </thead>
                 <tbody>
                   {artworks.map((artwork) => (
-                    <tr key={artwork.id} className="border-b border-gray-100 hover:bg-secondary/30">
+                    <tr key={artwork.id} className="border-b border-secondary/60 hover:bg-secondary/30">
                       <td className="py-2 px-2">
-                        <div className="w-10 h-10 relative rounded overflow-hidden bg-secondary">
+                        <div className="w-10 h-10 relative rounded-gallery overflow-hidden bg-secondary">
                           <Image
                             src={artwork.imageUrl}
                             alt={artwork.title}
@@ -163,11 +163,11 @@ export default function AdminArtworksPage() {
                           />
                         </div>
                       </td>
-                      <td className="py-2 px-2 font-medium text-accent max-w-[200px] truncate">
+                      <td className="py-2 px-2 font-medium text-foreground max-w-[200px] truncate">
                         {artwork.title}
                       </td>
                       <td className="py-2 px-2 text-muted hidden sm:table-cell">{artwork.category}</td>
-                      <td className="py-2 px-2 text-accent">{formatPrice(artwork.price)}</td>
+                      <td className="py-2 px-2 text-accent font-medium">{formatPrice(artwork.price)}</td>
                       <td className="py-2 px-2 hidden md:table-cell">
                         <Badge status={artwork.inStock ? "paid" : "cancelled"} className="text-xs">
                           {artwork.inStock ? "In Stock" : "Out of Stock"}
@@ -190,13 +190,13 @@ export default function AdminArtworksPage() {
                           <button
                             onClick={() => handleArchive(artwork)}
                             disabled={archiving === artwork.id}
-                            className="p-1.5 rounded hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-50"
+                            className="p-1.5 rounded hover:bg-error/10 transition-colors cursor-pointer disabled:opacity-50"
                             title="Archive"
                           >
                             {archiving === artwork.id ? (
                               <Loader2 className="w-4 h-4 text-muted animate-spin" />
                             ) : (
-                              <Archive className="w-4 h-4 text-red-500" />
+                              <Archive className="w-4 h-4 text-error" />
                             )}
                           </button>
                         </div>

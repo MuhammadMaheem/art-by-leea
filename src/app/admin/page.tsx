@@ -66,12 +66,12 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-accent">Dashboard</h1>
+        <h1 className="text-2xl font-heading font-bold text-foreground">Dashboard</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="h-28 bg-secondary rounded-xl animate-pulse"
+              className="h-28 bg-secondary rounded-gallery animate-pulse"
             />
           ))}
         </div>
@@ -82,8 +82,8 @@ export default function AdminDashboardPage() {
   if (error) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-accent">Dashboard</h1>
-        <p className="text-red-600">{error}</p>
+        <h1 className="text-2xl font-heading font-bold text-foreground">Dashboard</h1>
+        <p className="text-error">{error}</p>
       </div>
     );
   }
@@ -93,31 +93,31 @@ export default function AdminDashboardPage() {
       label: "Total Orders",
       value: metrics?.totalOrders ?? 0,
       icon: Package,
-      color: "text-blue-600 bg-blue-100",
+      color: "text-primary bg-primary-light/30",
     },
     {
       label: "Total Commissions",
       value: metrics?.totalCommissions ?? 0,
       icon: PenTool,
-      color: "text-purple-600 bg-purple-100",
+      color: "text-primary-dark bg-primary-light/30",
     },
     {
       label: "Pending Items",
       value: (metrics?.pendingOrders ?? 0) + (metrics?.pendingCommissions ?? 0),
       icon: Clock,
-      color: "text-amber-600 bg-amber-100",
+      color: "text-accent bg-accent/15",
     },
     {
       label: "Revenue",
       value: `Rs. ${(metrics?.revenue ?? 0).toFixed(0)}`,
       icon: DollarSign,
-      color: "text-green-600 bg-green-100",
+      color: "text-success bg-success/15",
     },
   ];
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-accent">Dashboard</h1>
+      <h1 className="text-2xl font-heading font-bold text-foreground">Dashboard</h1>
 
       {/* Summary metric cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -126,17 +126,17 @@ export default function AdminDashboardPage() {
           return (
             <div
               key={card.label}
-              className="bg-surface border border-secondary rounded-xl p-5 flex items-start gap-4"
+              className="gallery-card p-5 flex items-start gap-4"
             >
               <div
-                className={`p-2.5 rounded-lg ${card.color}`}
+                className={`p-2.5 rounded-full ${card.color}`}
                 aria-hidden="true"
               >
                 <Icon className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-sm text-muted">{card.label}</p>
-                <p className="text-2xl font-bold text-accent mt-1">
+                <p className="text-2xl font-bold text-foreground mt-1">
                   {card.value}
                 </p>
               </div>
@@ -146,8 +146,8 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Quick help text */}
-      <div className="bg-primary-light/20 border border-primary/30 rounded-xl p-5">
-        <h2 className="font-semibold text-accent mb-2">Quick Actions</h2>
+      <div className="bg-primary-light/20 border border-primary/30 rounded-gallery p-5">
+        <h2 className="font-heading font-semibold text-foreground mb-2">Quick Actions</h2>
         <p className="text-sm text-muted">
           Use the sidebar to navigate to <strong>Orders</strong> to update order
           statuses and track shipments, or <strong>Commissions</strong> to

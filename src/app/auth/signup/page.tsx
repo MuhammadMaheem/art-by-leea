@@ -18,7 +18,7 @@ export default function SignupPage() {
                 aria-hidden="true"
               />
             </div>
-            <h1 className="text-2xl font-bold text-accent mb-1">
+            <h1 className="text-2xl font-bold text-foreground mb-1">
               Create Account
             </h1>
             <p className="text-muted">Join to start collecting art</p>
@@ -28,7 +28,7 @@ export default function SignupPage() {
           </div>
 
           {/* Form card */}
-          <div className="bg-white border border-gray-100 rounded-xl p-6 md:p-8 shadow-sm">
+          <div className="bg-surface border border-primary/10 rounded-xl p-6 md:p-8 shadow-sm">
             <SignupForm />
           </div>
         </div>

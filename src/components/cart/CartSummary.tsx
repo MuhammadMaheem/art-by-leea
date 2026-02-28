@@ -82,37 +82,37 @@ export default function CartSummary() {
   const total = subtotal - discount;
 
   return (
-    <div className="bg-secondary/50 rounded-xl p-6 sticky top-24">
-      <h2 className="text-xl font-bold text-accent mb-4">Order Summary</h2>
+    <div className="gallery-card p-6 sticky top-24">
+      <h2 className="text-xl font-heading font-bold text-foreground mb-4">Order Summary</h2>
 
       <div className="space-y-3 mb-6">
         <div className="flex justify-between text-sm">
           <span className="text-muted">
             Subtotal ({totalItems()} item{totalItems() !== 1 ? "s" : ""})
           </span>
-          <span className="text-accent font-medium">
+          <span className="text-foreground font-medium">
             {formatPrice(subtotal)}
           </span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-muted">Shipping</span>
-          <span className="text-green-600 font-medium">Free</span>
+          <span className="text-success font-medium">Free</span>
         </div>
         {appliedPromo && (
           <div className="flex justify-between text-sm">
-            <span className="text-green-600 flex items-center gap-1">
+            <span className="text-success flex items-center gap-1">
               <Tag className="w-3.5 h-3.5" aria-hidden="true" />
               {appliedPromo.code} (-{appliedPromo.discountPercent}%)
             </span>
-            <span className="text-green-600 font-medium">
+            <span className="text-success font-medium">
               -{formatPrice(discount)}
             </span>
           </div>
         )}
-        <hr className="border-gray-200" />
+        <hr className="border-secondary-warm" />
         <div className="flex justify-between">
-          <span className="text-accent font-bold text-lg">Total</span>
-          <span className="text-primary font-bold text-lg">
+          <span className="text-foreground font-bold text-lg">Total</span>
+          <span className="text-accent font-bold text-lg">
             {formatPrice(total)}
           </span>
         </div>
@@ -121,14 +121,14 @@ export default function CartSummary() {
       {/* Promo code input */}
       <div className="mb-4">
         {appliedPromo ? (
-          <div className="flex items-center justify-between bg-green-50 rounded-lg px-3 py-2 border border-green-200">
-            <span className="text-sm text-green-700 font-medium">
+          <div className="flex items-center justify-between bg-success/10 rounded-gallery px-3 py-2 border border-success/20">
+            <span className="text-sm text-success font-medium">
               <Tag className="w-3.5 h-3.5 inline mr-1" aria-hidden="true" />
               {appliedPromo.code}
             </span>
             <button
               onClick={removePromo}
-              className="text-green-600 hover:text-green-800 cursor-pointer"
+              className="text-success hover:text-success/80 cursor-pointer"
               aria-label="Remove promo code"
             >
               <X className="w-4 h-4" />

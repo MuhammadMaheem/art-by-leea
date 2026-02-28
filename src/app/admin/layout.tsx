@@ -31,9 +31,9 @@ export default function AdminLayout({
 }) {
   return (
     <AuthGuard requireAdmin>
-      <section className="py-8 md:py-12">
+      <section className="py-10 md:py-14">
         <Container>
-          <div className="flex flex-col md:flex-row gap-8">
+          <div className="flex flex-col md:flex-row gap-10">
             {/* Sidebar navigation */}
             <AdminSidebar />
 
@@ -54,8 +54,8 @@ function AdminSidebar() {
       className="md:w-56 shrink-0"
       aria-label="Admin navigation"
     >
-      <h2 className="text-lg font-bold text-accent mb-4">Admin Panel</h2>
-      <ul className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible">
+      <h2 className="text-lg font-heading font-bold text-foreground mb-4">Admin Panel</h2>
+      <ul className="flex md:flex-col gap-1.5 overflow-x-auto md:overflow-visible">
         {adminLinks.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;
@@ -64,10 +64,10 @@ function AdminSidebar() {
               <Link
                 href={link.href}
                 className={cn(
-                  "flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors min-h-touch cursor-pointer",
+                  "flex items-center gap-2.5 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all min-h-touch cursor-pointer",
                   isActive
-                    ? "bg-primary text-accent"
-                    : "text-muted hover:bg-secondary hover:text-accent"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-muted hover:bg-secondary hover:text-foreground"
                 )}
               >
                 <Icon className="w-4 h-4" aria-hidden="true" />

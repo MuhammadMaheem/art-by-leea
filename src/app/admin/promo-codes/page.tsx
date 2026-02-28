@@ -132,7 +132,7 @@ function PromoCodesContent() {
   return (
     <Container>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-accent">Promo Codes</h1>
+        <h1 className="text-2xl font-heading font-bold text-foreground">Promo Codes</h1>
         <Button onClick={() => setShowForm(!showForm)}>
           <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
           {showForm ? "Cancel" : "New Code"}
@@ -140,7 +140,7 @@ function PromoCodesContent() {
       </div>
 
       {showForm && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8 space-y-4">
+        <div className="gallery-card p-6 mb-8 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               label="Code"
@@ -183,7 +183,7 @@ function PromoCodesContent() {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-gray-200">
+              <tr className="border-b border-secondary-warm">
                 <th className="pb-3 text-sm font-semibold text-muted">Code</th>
                 <th className="pb-3 text-sm font-semibold text-muted">Discount</th>
                 <th className="pb-3 text-sm font-semibold text-muted">Uses</th>
@@ -194,9 +194,9 @@ function PromoCodesContent() {
             </thead>
             <tbody>
               {codes.map((promo) => (
-                <tr key={promo.id} className="border-b border-gray-100">
-                  <td className="py-3 font-mono font-semibold text-accent">{promo.code}</td>
-                  <td className="py-3 text-accent">{promo.discountPercent}%</td>
+                <tr key={promo.id} className="border-b border-secondary/60">
+                  <td className="py-3 font-mono font-semibold text-foreground">{promo.code}</td>
+                  <td className="py-3 text-foreground">{promo.discountPercent}%</td>
                   <td className="py-3 text-muted">
                     {promo.currentUses}{promo.maxUses > 0 ? ` / ${promo.maxUses}` : " / ∞"}
                   </td>
@@ -218,18 +218,18 @@ function PromoCodesContent() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleToggle(promo)}
-                        className="p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                        className="p-2 rounded-full hover:bg-secondary transition-colors cursor-pointer"
                         aria-label={promo.isActive ? "Deactivate" : "Activate"}
                       >
                         {promo.isActive ? (
-                          <ToggleRight className="w-5 h-5 text-green-600" />
+                          <ToggleRight className="w-5 h-5 text-success" />
                         ) : (
                           <ToggleLeft className="w-5 h-5 text-muted" />
                         )}
                       </button>
                       <button
                         onClick={() => handleDelete(promo.id)}
-                        className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors cursor-pointer"
+                        className="p-2 rounded-full hover:bg-error/10 text-error transition-colors cursor-pointer"
                         aria-label="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
