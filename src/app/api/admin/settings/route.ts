@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     await verifyAdmin(request);
 
     const body = await request.json();
-    const { categories, budgetRanges, easypaisaNumber } = body;
+    const { categories, budgetRanges, easypaisaNumber, adminEmail } = body;
 
     if (!Array.isArray(categories) || !Array.isArray(budgetRanges)) {
       return NextResponse.json(
@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
         categories,
         budgetRanges,
         easypaisaNumber: typeof easypaisaNumber === "string" ? easypaisaNumber.trim() : "03404677899",
+        adminEmail: typeof adminEmail === "string" ? adminEmail.trim() : "",
         updatedAt: FieldValue.serverTimestamp(),
       });
 

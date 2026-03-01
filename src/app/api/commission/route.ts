@@ -51,6 +51,16 @@ export async function POST(request: NextRequest) {
       .collection("commissions")
       .add(commissionData);
 
+    // Fetch admin email from settings
+    const db = getAdminDb();
+    const settingsSnap = await db
+      .collection("settings")
+      .doc("commissionConfig")
+      .get();
+    const adminEmail = settingsSnap.exists
+      ? settingsSnap.data()?.adminEmail || ""
+      : "";
+
     // Notify admin via email (non-blocking)
     sendCommissionNotification({
       commissionId: docRef.id,
@@ -59,12 +69,12 @@ export async function POST(request: NextRequest) {
       description,
       category,
       budget,
+      adminEmail: adminEmail || undefined,
     }).catch((err) => {
       console.error("[API] Failed to send commission notification:", err);
     });
 
     // Notify admin users about the new commission
-    const db = getAdminDb();
     const admins = await db.collection("users").where("role", "==", "admin").get();
     for (const adminDoc of admins.docs) {
       createNotification({

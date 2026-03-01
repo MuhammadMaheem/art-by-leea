@@ -14,7 +14,7 @@ import { sendCommissionStatusUpdate } from "@/lib/resend";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { commissionId, status, userEmail, userName } = body;
+    const { commissionId, status, userEmail, userName, quotedPrice, estimatedDelivery, rejectionReason } = body;
 
     if (!commissionId || !status || !userEmail) {
       return NextResponse.json(
@@ -28,6 +28,9 @@ export async function POST(request: NextRequest) {
       commissionId,
       status,
       userName: userName || "Customer",
+      quotedPrice: quotedPrice || undefined,
+      estimatedDelivery: estimatedDelivery || undefined,
+      rejectionReason: rejectionReason || undefined,
     });
 
     return NextResponse.json({ success: true });

@@ -58,6 +58,9 @@ export async function POST(request: NextRequest) {
     const easypaisaNumber = settingsSnap.exists
       ? settingsSnap.data()?.easypaisaNumber || "03404677899"
       : "03404677899";
+    const adminEmail = settingsSnap.exists
+      ? settingsSnap.data()?.adminEmail || ""
+      : "";
 
     // Create the Order in Firestore
     const { FieldValue: FV } = await import("firebase-admin/firestore");
@@ -105,29 +108,34 @@ export async function POST(request: NextRequest) {
       link: "/profile",
     }).catch((err) => console.error("[Checkout] Notification error:", err));
 
-    // Send confirmation email to customer (fire and forget)
+    const emailItems = items.map((i: { title: string; price: number; quantity: number }) => ({
+      title: i.title,
+      price: i.price,
+      quantity: i.quantity,
+    }));
+    const resolvedAdminEmail = adminEmail || process.env.ADMIN_EMAIL || "";
+    console.log(`[Checkout] Sending emails — customer: ${userEmail}, admin: ${resolvedAdminEmail}`);
+
+    // Send confirmation email to customer
     sendOrderConfirmation({
       to: userEmail,
       orderId: orderRef.id,
-      items: items.map((i: { title: string; price: number; quantity: number }) => ({
-        title: i.title,
-        price: i.price,
-        quantity: i.quantity,
-      })),
+      items: emailItems,
       total,
+    }).then((result) => {
+      console.log("[Checkout] Customer email sent:", JSON.stringify(result));
     }).catch((err) => console.error("[Checkout] Customer email error:", err));
 
-    // Send receipt to admin for verification (fire and forget)
+    // Send receipt to admin for verification
     sendOrderReceiptToAdmin({
       orderId: orderRef.id,
       userEmail,
       receiptImageUrl,
-      items: items.map((i: { title: string; price: number; quantity: number }) => ({
-        title: i.title,
-        price: i.price,
-        quantity: i.quantity,
-      })),
+      items: emailItems,
       total,
+      adminEmail: resolvedAdminEmail || undefined,
+    }).then((result) => {
+      console.log("[Checkout] Admin email sent:", JSON.stringify(result));
     }).catch((err) => console.error("[Checkout] Admin email error:", err));
 
     return NextResponse.json({ success: true, orderId: orderRef.id });

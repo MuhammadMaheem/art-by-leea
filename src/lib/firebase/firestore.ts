@@ -166,15 +166,25 @@ export async function getAllCommissions(): Promise<Commission[]> {
   })) as Commission[];
 }
 
-/** Update commission status and optional admin notes */
+/** Update commission status and optional additional fields */
 export async function updateCommissionStatus(
   commissionId: string,
   status: Commission["status"],
-  adminNotes?: string
+  extras?: {
+    adminNotes?: string;
+    quotedPrice?: number;
+    estimatedDelivery?: string;
+    rejectionReason?: string;
+    messageThreadId?: string;
+  }
 ): Promise<void> {
   const updateData: DocumentData = { status };
-  if (adminNotes !== undefined) {
-    updateData.adminNotes = adminNotes;
+  if (extras) {
+    if (extras.adminNotes !== undefined) updateData.adminNotes = extras.adminNotes;
+    if (extras.quotedPrice !== undefined) updateData.quotedPrice = extras.quotedPrice;
+    if (extras.estimatedDelivery !== undefined) updateData.estimatedDelivery = extras.estimatedDelivery;
+    if (extras.rejectionReason !== undefined) updateData.rejectionReason = extras.rejectionReason;
+    if (extras.messageThreadId !== undefined) updateData.messageThreadId = extras.messageThreadId;
   }
   await updateDoc(doc(db, "commissions", commissionId), updateData);
 }

@@ -48,9 +48,15 @@ export const BUDGET_RANGES = [
 /** Commission/Order status flow */
 export const COMMISSION_STATUSES = [
   "pending",
+  "reviewing",
+  "quoted",
+  "accepted",
   "in-progress",
+  "revision",
   "completed",
   "delivered",
+  "rejected",
+  "cancelled",
 ] as const;
 
 export const ORDER_STATUSES = [

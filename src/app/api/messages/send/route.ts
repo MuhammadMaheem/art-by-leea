@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const senderRole = userProfile.role as "customer" | "admin";
 
     const body = await request.json();
-    const { threadId, text, customerId } = body;
+    const { threadId, text, customerId, customerName, customerEmail, commissionId } = body;
 
     if (!text?.trim()) {
       return NextResponse.json({ error: "Message text is required." }, { status: 400 });
@@ -62,19 +62,21 @@ export async function POST(request: NextRequest) {
         const customerDoc = senderRole === "admin"
           ? await db.collection("users").doc(resolvedCustomerId).get()
           : userDoc;
-        const customerData = customerDoc.data()!;
+        const customerData = customerDoc.exists ? customerDoc.data()! : null;
 
         threadRef = db.collection("messages").doc();
-        await threadRef.set({
+        const threadData: Record<string, unknown> = {
           customerId: resolvedCustomerId,
-          customerName: customerData.displayName || "Customer",
-          customerEmail: customerData.email || "",
+          customerName: customerName || customerData?.displayName || "Customer",
+          customerEmail: customerEmail || customerData?.email || "",
           lastMessage: text.trim(),
           lastMessageAt: FieldValue.serverTimestamp(),
           unreadByAdmin: senderRole === "customer" ? 1 : 0,
           unreadByCustomer: senderRole === "admin" ? 1 : 0,
           createdAt: FieldValue.serverTimestamp(),
-        });
+        };
+        if (commissionId) threadData.commissionId = commissionId;
+        await threadRef.set(threadData);
 
         // Add the chat message
         await threadRef.collection("chats").add({

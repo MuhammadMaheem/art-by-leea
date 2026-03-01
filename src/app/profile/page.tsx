@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, Package, PenTool, User, Lock, XCircle } from "lucide-react";
+import { LogOut, Package, PenTool, User, Lock, XCircle, MessageCircle } from "lucide-react";
 import Container from "@/components/layout/Container";
 import AuthGuard from "@/components/auth/AuthGuard";
 import Badge from "@/components/ui/Badge";
@@ -310,17 +310,54 @@ function ProfileContent() {
               {commissions.map((commission) => (
                 <div
                   key={commission.id}
-                  className="gallery-card p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+                  className="gallery-card p-4 flex flex-col gap-3"
                 >
-                  <div>
-                    <p className="font-medium text-foreground">
-                      {commission.category} — {commission.budget}
-                    </p>
-                    <p className="text-sm text-muted line-clamp-1">
-                      {commission.description}
-                    </p>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                      <p className="font-medium text-foreground">
+                        {commission.category} — {commission.budget}
+                      </p>
+                      <p className="text-sm text-muted line-clamp-1">
+                        {commission.description}
+                      </p>
+                    </div>
+                    <Badge status={commission.status} />
                   </div>
-                  <Badge status={commission.status} />
+
+                  {/* Quoted price & estimated delivery */}
+                  {(commission.quotedPrice || commission.estimatedDelivery) && (
+                    <div className="flex flex-wrap gap-3 text-xs">
+                      {commission.quotedPrice && (
+                        <span className="bg-success/10 text-success px-2.5 py-1 rounded-full font-medium">
+                          Quoted: {formatPrice(commission.quotedPrice)}
+                        </span>
+                      )}
+                      {commission.estimatedDelivery && (
+                        <span className="bg-primary/10 text-primary-dark px-2.5 py-1 rounded-full">
+                          Delivery: {commission.estimatedDelivery}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Rejection reason */}
+                  {commission.status === "rejected" && commission.rejectionReason && (
+                    <div className="text-xs text-muted bg-error/5 dark:bg-error/10 border border-error/15 rounded-lg px-3 py-2">
+                      <span className="font-medium text-error">Reason:</span>{" "}
+                      {commission.rejectionReason}
+                    </div>
+                  )}
+
+                  {/* Message thread link */}
+                  {commission.messageThreadId && (
+                    <button
+                      onClick={() => router.push("/messages")}
+                      className="cursor-pointer inline-flex items-center gap-1.5 self-start px-3 py-1.5 rounded-full text-xs font-medium border border-primary/25 text-primary-dark hover:bg-primary/10 transition-colors"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" aria-hidden="true" />
+                      View Messages
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

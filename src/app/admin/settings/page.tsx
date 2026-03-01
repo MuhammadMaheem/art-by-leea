@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, X, Loader2 } from "lucide-react";
+import { Plus, X, Loader2, Mail } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import { auth } from "@/lib/firebase/client";
@@ -15,6 +15,7 @@ export default function AdminSettingsPage() {
   const [categories, setCategories] = useState<string[]>([]);
   const [budgetRanges, setBudgetRanges] = useState<string[]>([]);
   const [easypaisaNumber, setEasypaisaNumber] = useState("03404677899");
+  const [adminEmail, setAdminEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dupError, setDupError] = useState<{ section: string; index: number } | null>(null);
@@ -28,6 +29,7 @@ export default function AdminSettingsPage() {
           setCategories(data.config.categories?.length ? data.config.categories : DEFAULT_CATEGORIES);
           setBudgetRanges(data.config.budgetRanges?.length ? data.config.budgetRanges : DEFAULT_BUDGET_RANGES);
           setEasypaisaNumber(data.config.easypaisaNumber || "03404677899");
+          setAdminEmail(data.config.adminEmail || "");
         } else {
           // No config saved yet — use defaults
           setCategories(DEFAULT_CATEGORIES);
@@ -76,7 +78,7 @@ export default function AdminSettingsPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ categories: cleanCats, budgetRanges: cleanRanges, easypaisaNumber }),
+        body: JSON.stringify({ categories: cleanCats, budgetRanges: cleanRanges, easypaisaNumber, adminEmail: adminEmail.trim() }),
       });
 
       if (res.ok) {
@@ -103,7 +105,30 @@ export default function AdminSettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-heading font-bold text-foreground mb-6">Commission Form Settings</h1>
+      <h1 className="text-2xl font-heading font-bold text-foreground mb-6">Settings</h1>
+
+      {/* Admin Notification Email */}
+      <div className="mb-8">
+        <h3 className="text-lg font-heading font-semibold text-foreground mb-3 flex items-center gap-2">
+          <Mail className="w-5 h-5 text-primary" aria-hidden="true" />
+          Admin Notification Email
+        </h3>
+        <p className="text-sm text-muted mb-2">
+          Order receipts and commission notifications will be sent to this email address.
+          If left empty, the system default (ADMIN_EMAIL env variable) will be used.
+        </p>
+        <p className="text-xs text-accent mb-3">
+          ⚠️ While using Resend&apos;s free tier with <code className="bg-secondary px-1 rounded">onboarding@resend.dev</code> as the sender,
+          emails can only be delivered to the Resend account owner&apos;s email. Add a custom domain in Resend to send to any address.
+        </p>
+        <input
+          type="email"
+          value={adminEmail}
+          onChange={(e) => setAdminEmail(e.target.value)}
+          className="w-full max-w-sm px-3 py-2 rounded-gallery border border-primary/15 dark:border-secondary-warm/60 bg-secondary/50 dark:bg-secondary-warm text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white dark:focus:bg-secondary-deep transition-colors"
+          placeholder="admin@example.com"
+        />
+      </div>
 
       {/* Easypaisa Number */}
       <div className="mb-8">

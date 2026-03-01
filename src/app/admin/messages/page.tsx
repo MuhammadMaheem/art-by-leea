@@ -3,7 +3,8 @@
  */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import AuthGuard from "@/components/auth/AuthGuard";
 import Container from "@/components/layout/Container";
@@ -20,6 +21,8 @@ export default function AdminMessagesPage() {
 }
 
 function MessagesContent() {
+  const searchParams = useSearchParams();
+  const initialThreadId = searchParams.get("thread");
   const [selectedThread, setSelectedThread] = useState<MessageThreadType | null>(null);
 
   return (
@@ -32,6 +35,7 @@ function MessagesContent() {
           <InboxList
             selectedThreadId={selectedThread?.id || null}
             onSelectThread={setSelectedThread}
+            autoSelectThreadId={initialThreadId}
           />
         </div>
 

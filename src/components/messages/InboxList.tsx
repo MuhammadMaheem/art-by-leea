@@ -16,11 +16,13 @@ import type { MessageThread } from "@/types";
 interface InboxListProps {
   selectedThreadId: string | null;
   onSelectThread: (thread: MessageThread) => void;
+  autoSelectThreadId?: string | null;
 }
 
-export default function InboxList({ selectedThreadId, onSelectThread }: InboxListProps) {
+export default function InboxList({ selectedThreadId, onSelectThread, autoSelectThreadId }: InboxListProps) {
   const { profile } = useAuth();
   const [threads, setThreads] = useState<MessageThread[]>([]);
+  const [autoSelected, setAutoSelected] = useState(false);
 
   useEffect(() => {
     const q = query(
@@ -35,6 +37,17 @@ export default function InboxList({ selectedThreadId, onSelectThread }: InboxLis
 
     return () => unsubscribe();
   }, []);
+
+  // Auto-select thread from prop (e.g. deep-link from commissions page)
+  useEffect(() => {
+    if (autoSelectThreadId && !autoSelected && threads.length > 0) {
+      const match = threads.find((t) => t.id === autoSelectThreadId);
+      if (match) {
+        onSelectThread(match);
+        setAutoSelected(true);
+      }
+    }
+  }, [autoSelectThreadId, threads, autoSelected, onSelectThread]);
 
   const getUnread = (thread: MessageThread) =>
     profile?.role === "admin" ? thread.unreadByAdmin : thread.unreadByCustomer;

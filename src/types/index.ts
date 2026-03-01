@@ -38,7 +38,6 @@ export interface Order {
   status: "pending" | "pending_verification" | "paid" | "shipped" | "delivered" | "cancelled";
   receiptImageUrl?: string;
   easypaisaNumber?: string;
-  stripeSessionId?: string;
   promoCode?: string;
   discountAmount?: number;
   cancellationReason?: string;
@@ -66,8 +65,12 @@ export interface Commission {
   category: string;
   budget: string;
   referenceImageUrls: string[];
-  status: "pending" | "in-progress" | "completed" | "delivered";
+  status: "pending" | "reviewing" | "quoted" | "accepted" | "in-progress" | "revision" | "completed" | "delivered" | "rejected" | "cancelled";
   adminNotes?: string;
+  quotedPrice?: number;
+  estimatedDelivery?: string;
+  rejectionReason?: string;
+  messageThreadId?: string;
   createdAt: Timestamp | string;
 }
 
@@ -85,6 +88,7 @@ export interface CommissionConfig {
   categories: string[];
   budgetRanges: string[];
   easypaisaNumber?: string;
+  adminEmail?: string;
   updatedAt: Timestamp | string;
 }
 
@@ -106,6 +110,7 @@ export interface MessageThread {
   customerId: string;
   customerName: string;
   customerEmail: string;
+  commissionId?: string;
   lastMessage: string;
   lastMessageAt: Timestamp | string;
   unreadByAdmin: number;
