@@ -3,7 +3,7 @@
  */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
 import AuthGuard from "@/components/auth/AuthGuard";
 import Container from "@/components/layout/Container";
@@ -42,7 +42,7 @@ function PromoCodesContent() {
     return token || "";
   };
 
-  const fetchCodes = async () => {
+  const fetchCodes = useCallback(async () => {
     try {
       const token = await getToken();
       const res = await fetch("/api/admin/promo-codes", {
@@ -57,11 +57,11 @@ function PromoCodesContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (user) fetchCodes();
-  }, [user]);
+  }, [user, fetchCodes]);
 
   const handleCreate = async () => {
     if (!code.trim() || !discountPercent) return;

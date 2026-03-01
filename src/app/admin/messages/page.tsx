@@ -3,7 +3,7 @@
  */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import AuthGuard from "@/components/auth/AuthGuard";
