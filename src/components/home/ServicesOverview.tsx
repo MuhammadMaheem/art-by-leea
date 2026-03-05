@@ -53,7 +53,7 @@ export default function ServicesOverview() {
             return (
               <div
                 key={service.title}
-                className="gallery-card p-8 text-center"
+                className="bg-surface border border-primary/20 dark:border-primary/10 rounded-gallery shadow-sm p-5 sm:p-6 md:p-8 text-center"
               >
                 {/* Icon container */}
                 <div className="w-14 h-14 bg-primary-light/40 dark:bg-secondary-warm rounded-full flex items-center justify-center mx-auto mb-6">

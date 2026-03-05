@@ -7,9 +7,10 @@
  */
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, PenTool, Palette, Settings, Tag, MessageCircle } from "lucide-react";
+import { LayoutDashboard, Package, PenTool, Palette, Settings, Tag, MessageCircle, ChevronDown } from "lucide-react";
 import AuthGuard from "@/components/auth/AuthGuard";
 import Container from "@/components/layout/Container";
 import { cn } from "@/utils/cn";
@@ -48,14 +49,76 @@ export default function AdminLayout({
 
 function AdminSidebar() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Resolve which link is currently active (exact match first, then prefix for sub-routes)
+  const currentLink =
+    adminLinks.find((l) => pathname === l.href) ||
+    adminLinks.find((l) => l.href !== "/admin" && pathname.startsWith(l.href)) ||
+    adminLinks[0];
+  const CurrentIcon = currentLink.icon;
 
   return (
-    <nav
-      className="md:w-56 shrink-0"
-      aria-label="Admin navigation"
-    >
+    <nav className="md:w-56 shrink-0" aria-label="Admin navigation">
       <h2 className="text-lg font-heading font-bold text-foreground mb-4">Admin Panel</h2>
-      <ul className="flex md:flex-col gap-1.5 overflow-x-auto md:overflow-visible">
+
+      {/* ── Mobile: collapsible dropdown ── */}
+      <div className="md:hidden">
+        {/* Collapsed trigger — shows current page */}
+        <button
+          onClick={() => setMobileOpen((o) => !o)}
+          className="w-full flex items-center justify-between gap-3 px-4 py-3 gallery-card cursor-pointer"
+          aria-expanded={mobileOpen}
+          aria-controls="admin-mobile-nav"
+        >
+          <div className="flex items-center gap-2.5">
+            <CurrentIcon className="w-4 h-4 text-primary shrink-0" aria-hidden="true" />
+            <span className="text-sm font-semibold text-foreground">{currentLink.label}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-muted">Menu</span>
+            <ChevronDown
+              className={cn(
+                "w-4 h-4 text-muted transition-transform duration-200",
+                mobileOpen && "rotate-180"
+              )}
+              aria-hidden="true"
+            />
+          </div>
+        </button>
+
+        {/* Expanded grid of nav items */}
+        {mobileOpen && (
+          <div
+            id="admin-mobile-nav"
+            className="mt-2 gallery-card p-3 grid grid-cols-2 gap-2"
+          >
+            {adminLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "flex items-center gap-2.5 px-3 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer min-h-touch",
+                    isActive
+                      ? "bg-primary text-white shadow-sm"
+                      : "text-muted hover:bg-primary-light/15 hover:text-foreground"
+                  )}
+                >
+                  <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span className="truncate">{link.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ── Desktop: vertical pill list (unchanged) ── */}
+      <ul className="hidden md:flex md:flex-col gap-1.5">
         {adminLinks.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;

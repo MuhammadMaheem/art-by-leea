@@ -91,7 +91,7 @@ function ToastItem({
   return (
     <div
       className={cn(
-        "flex items-stretch rounded-gallery shadow-lg border min-w-[300px] max-w-[400px] overflow-hidden",
+        "flex items-stretch rounded-gallery shadow-lg border min-w-[260px] max-w-[calc(100vw-2rem)] overflow-hidden",
         "animate-in slide-in-from-right",
         toast.type === "success"
           ? "bg-surface border-success/20"

@@ -57,6 +57,18 @@ export default function Navbar() {
     }
   }, [user, profile]);
 
+  // Close notification panel when clicking outside its container
+  useEffect(() => {
+    if (!showNotifications) return;
+    function handleOutside(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setShowNotifications(false);
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [showNotifications]);
+
   return (
     <header className="sticky top-0 z-40 glass-nav">
       <Container>
@@ -148,7 +160,7 @@ export default function Navbar() {
                   )}
                 </button>
                 {showNotifications && (
-                  <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto bg-surface rounded-gallery shadow-lg border border-primary/10 z-50">
+                  <div className="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-1rem)] max-h-96 overflow-y-auto bg-surface rounded-gallery shadow-lg border border-primary/10 z-50">
                     <div className="px-4 py-3 border-b border-secondary">
                       <h3 className="font-heading font-semibold text-foreground text-sm">Notifications</h3>
                     </div>

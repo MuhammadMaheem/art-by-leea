@@ -7,7 +7,7 @@ import SignupForm from "@/components/auth/SignupForm";
 
 export default function SignupPage() {
   return (
-    <section className="py-12 md:py-20">
+    <section className="py-8 sm:py-12 md:py-20">
       <Container>
         <div className="max-w-md mx-auto">
           {/* Header */}

@@ -57,7 +57,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
       {/* Slide-out panel */}
       <nav
-        className="absolute right-0 top-0 h-full w-72 bg-background shadow-xl flex flex-col animate-in slide-in-from-right duration-300"
+        className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-background shadow-xl flex flex-col animate-in slide-in-from-right duration-300"
         aria-label="Mobile navigation"
       >
         {/* Header with close button */}

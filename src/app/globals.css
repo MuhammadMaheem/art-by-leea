@@ -97,15 +97,28 @@ body {
   }
 
   /* Frosted glass effect for sticky navbar */
+  /* Glass nav — backdrop-filter moved to ::before to avoid creating a compositing
+     stacking context on the header itself, which would make child dropdowns
+     transparent on mobile Safari/Chrome. */
   .glass-nav {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    background-color: rgba(250, 247, 242, 0.85);
+    position: relative;
+    background-color: transparent;
     border-bottom: 1px solid rgba(155, 142, 196, 0.15);
   }
+  .glass-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    background-color: rgba(250, 247, 242, 0.85);
+  }
   .dark .glass-nav {
-    background-color: rgba(28, 26, 22, 0.88);
     border-bottom: 1px solid rgba(184, 169, 227, 0.1);
+  }
+  .dark .glass-nav::before {
+    background-color: rgba(28, 26, 22, 0.88);
   }
 
   /* Gallery-style framed card */

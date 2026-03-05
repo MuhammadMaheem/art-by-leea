@@ -22,7 +22,7 @@ function CheckoutSuccessContent() {
   return (
     <section className="py-20 md:py-28">
       <Container>
-        <div className="max-w-lg mx-auto text-center gallery-card p-10">
+          <div className="max-w-lg mx-auto text-center gallery-card p-6 sm:p-10">
           <div className="w-20 h-20 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-6 ring-2 ring-success/20">
             <CheckCircle
               className="w-12 h-12 text-success"

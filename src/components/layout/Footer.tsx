@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <footer className="bg-secondary dark:bg-secondary-deep text-foreground mt-auto border-t-2 border-primary-light/25 dark:border-primary/15">
       <Container className="py-14">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
           {/* Brand */}
           <div>
             <Link

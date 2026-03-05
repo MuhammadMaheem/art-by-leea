@@ -82,7 +82,7 @@ export default function CartSummary() {
   const total = subtotal - discount;
 
   return (
-    <div className="gallery-card p-6 sticky top-24">
+    <div className="gallery-card p-6 lg:sticky lg:top-24">
       <h2 className="text-xl font-heading font-bold text-foreground mb-4">Order Summary</h2>
 
       <div className="space-y-3 mb-6">

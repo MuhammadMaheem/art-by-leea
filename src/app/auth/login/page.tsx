@@ -7,7 +7,7 @@ import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <section className="py-14 md:py-24">
+    <section className="py-8 sm:py-14 md:py-24">
       <Container>
         <div className="max-w-md mx-auto">
           {/* Header */}

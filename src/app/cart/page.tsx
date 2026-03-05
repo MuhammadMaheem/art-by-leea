@@ -42,7 +42,7 @@ export default function CartPage() {
 
         {items.length === 0 ? (
           /* Empty cart state */
-          <div className="text-center py-20 bg-primary-light/8 dark:bg-primary/5 rounded-gallery border border-primary-light/15 dark:border-primary/10">
+          <div className="text-center py-20 bg-primary-light/10 dark:bg-primary/5 rounded-gallery border border-primary-light/15 dark:border-primary/10">
             <ShoppingBag
               className="w-16 h-16 text-muted/40 mx-auto mb-4"
               aria-hidden="true"
@@ -68,7 +68,7 @@ export default function CartPage() {
                 </span>
                 <button
                   onClick={clearCart}
-                  className="text-sm text-error hover:text-error/80 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 rounded-full px-3 py-1"
+                  className="text-sm text-error hover:text-error/80 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 rounded-full px-3 py-1 min-h-touch"
                 >
                   Clear all
                 </button>

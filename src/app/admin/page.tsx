@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react";
 import { Package, PenTool, Clock, DollarSign } from "lucide-react";
 import { getAllOrders, getAllCommissions } from "@/lib/firebase/firestore";
+import { formatPrice } from "@/utils/formatPrice";
 import type { Order, Commission } from "@/types";
 
 interface DashboardMetrics {
@@ -109,7 +110,7 @@ export default function AdminDashboardPage() {
     },
     {
       label: "Revenue",
-      value: `Rs. ${(metrics?.revenue ?? 0).toFixed(0)}`,
+      value: formatPrice(metrics?.revenue ?? 0),
       icon: DollarSign,
       color: "text-success bg-success/15",
     },

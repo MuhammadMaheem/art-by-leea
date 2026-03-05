@@ -29,9 +29,9 @@ function MessagesContent() {
     <Container>
       <h1 className="text-2xl font-heading font-bold text-foreground mb-6">Messages</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:h-[600px]">
         {/* Thread list */}
-        <div className="lg:col-span-1 border border-secondary-warm rounded-gallery overflow-y-auto bg-surface">
+        <div className="lg:col-span-1 border border-secondary-warm rounded-gallery overflow-y-auto bg-surface h-[350px] lg:h-full">
           <InboxList
             selectedThreadId={selectedThread?.id || null}
             onSelectThread={setSelectedThread}
@@ -40,7 +40,7 @@ function MessagesContent() {
         </div>
 
         {/* Chat view */}
-        <div className="lg:col-span-2 border border-secondary-warm rounded-gallery bg-surface flex flex-col">
+        <div className="lg:col-span-2 border border-secondary-warm rounded-gallery bg-surface flex flex-col h-[450px] lg:h-full">
           {selectedThread ? (
             <>
               <div className="px-4 py-3 border-b border-secondary-warm">

@@ -48,7 +48,7 @@ export default function CartItem({ item }: CartItemProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-            className="cursor-pointer p-1.5 rounded-full border border-primary/15 hover:bg-secondary transition-all min-h-touch min-w-[32px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+            className="cursor-pointer p-1.5 rounded-full border border-primary/15 hover:bg-secondary transition-all min-h-touch min-w-touch flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
             aria-label={`Decrease quantity of ${item.title}`}
           >
             <Minus className="w-4 h-4" aria-hidden="true" />
@@ -58,7 +58,7 @@ export default function CartItem({ item }: CartItemProps) {
           </span>
           <button
             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-            className="cursor-pointer p-1.5 rounded-full border border-primary/15 hover:bg-secondary transition-all min-h-touch min-w-[32px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+            className="cursor-pointer p-1.5 rounded-full border border-primary/15 hover:bg-secondary transition-all min-h-touch min-w-touch flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
             aria-label={`Increase quantity of ${item.title}`}
           >
             <Plus className="w-4 h-4" aria-hidden="true" />

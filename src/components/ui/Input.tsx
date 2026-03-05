@@ -39,7 +39,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-describedby={error ? errorId : undefined}
           aria-invalid={!!error}
           className={cn(
-            "w-full px-4 py-3 rounded-gallery border bg-secondary/50 dark:bg-secondary-warm text-foreground",
+            "w-full px-4 py-3 rounded-gallery border bg-secondary/50 dark:bg-secondary-warm text-foreground text-base",
             "placeholder:text-muted/60",
             "focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary focus:bg-white dark:focus:bg-secondary-deep",
             "transition-all duration-200",

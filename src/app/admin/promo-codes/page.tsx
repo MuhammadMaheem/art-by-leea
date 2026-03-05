@@ -36,6 +36,7 @@ function PromoCodesContent() {
   const [maxUses, setMaxUses] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
   const [saving, setSaving] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   const getToken = async () => {
     const token = await auth.currentUser?.getIdToken();
@@ -115,7 +116,6 @@ function PromoCodesContent() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this promo code?")) return;
     try {
       const token = await getToken();
       await fetch(`/api/admin/promo-codes/${id}`, {
@@ -176,20 +176,24 @@ function PromoCodesContent() {
       )}
 
       {loading ? (
-        <p className="text-muted">Loading...</p>
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="h-12 bg-secondary rounded-gallery animate-pulse" />
+          ))}
+        </div>
       ) : codes.length === 0 ? (
         <p className="text-muted">No promo codes yet.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="w-full text-left" aria-label="Promo codes">
             <thead>
               <tr className="border-b border-secondary-warm">
-                <th className="pb-3 text-sm font-semibold text-muted">Code</th>
-                <th className="pb-3 text-sm font-semibold text-muted">Discount</th>
-                <th className="pb-3 text-sm font-semibold text-muted">Uses</th>
-                <th className="pb-3 text-sm font-semibold text-muted">Status</th>
-                <th className="pb-3 text-sm font-semibold text-muted">Expires</th>
-                <th className="pb-3 text-sm font-semibold text-muted text-right">Actions</th>
+                <th scope="col" className="pb-3 text-sm font-semibold text-muted">Code</th>
+                <th scope="col" className="pb-3 text-sm font-semibold text-muted">Discount</th>
+                <th scope="col" className="pb-3 text-sm font-semibold text-muted">Uses</th>
+                <th scope="col" className="pb-3 text-sm font-semibold text-muted">Status</th>
+                <th scope="col" className="pb-3 text-sm font-semibold text-muted">Expires</th>
+                <th scope="col" className="pb-3 text-sm font-semibold text-muted text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -215,10 +219,27 @@ function PromoCodesContent() {
                       : "Never"}
                   </td>
                   <td className="py-3 text-right">
+                    {deleteTargetId === promo.id ? (
+                      <div className="flex items-center justify-end gap-2">
+                        <span className="text-sm text-muted">Delete?</span>
+                        <button
+                          onClick={() => { handleDelete(promo.id); setDeleteTargetId(null); }}
+                          className="px-3 py-1.5 rounded-full bg-error text-white text-xs font-semibold hover:bg-error/90 transition-colors min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
+                        >
+                          Yes
+                        </button>
+                        <button
+                          onClick={() => setDeleteTargetId(null)}
+                          className="px-3 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold hover:bg-secondary-warm transition-colors min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
+                        >
+                          No
+                        </button>
+                      </div>
+                    ) : (
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleToggle(promo)}
-                        className="p-2 rounded-full hover:bg-secondary transition-colors cursor-pointer"
+                        className="p-2 rounded-full hover:bg-secondary transition-colors cursor-pointer min-h-touch min-w-touch flex items-center justify-center"
                         aria-label={promo.isActive ? "Deactivate" : "Activate"}
                       >
                         {promo.isActive ? (
@@ -228,13 +249,14 @@ function PromoCodesContent() {
                         )}
                       </button>
                       <button
-                        onClick={() => handleDelete(promo.id)}
-                        className="p-2 rounded-full hover:bg-error/10 text-error transition-colors cursor-pointer"
+                        onClick={() => setDeleteTargetId(promo.id)}
+                        className="p-2 rounded-full hover:bg-error/10 text-error transition-colors cursor-pointer min-h-touch min-w-touch flex items-center justify-center"
                         aria-label="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
+                    )}
                   </td>
                 </tr>
               ))}
