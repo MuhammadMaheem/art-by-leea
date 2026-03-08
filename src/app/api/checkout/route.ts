@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       price: i.price,
       quantity: i.quantity,
     }));
-    const resolvedAdminEmail = adminEmail || process.env.ADMIN_EMAIL || "";
+    const resolvedAdminEmail = process.env.ADMIN_EMAIL || adminEmail || "artbyaleeha@gmail.com";
     console.log(`[Checkout] Sending emails — customer: ${userEmail}, admin: ${resolvedAdminEmail}`);
 
     // Send confirmation email to customer
