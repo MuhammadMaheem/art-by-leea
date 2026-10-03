@@ -7,7 +7,7 @@
  */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, ShoppingCart, User, LogIn, LogOut, MessageCircle } from "lucide-react";
@@ -26,6 +26,8 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const { user, isAdmin } = useAuth();
   const totalItems = useCartStore((s) => s.totalItems);
   const pathname = usePathname();
+  const panelRef = useRef<HTMLElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -38,6 +40,43 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    closeButtonRef.current?.focus();
+
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (e.key !== "Tab" || !panelRef.current) return;
+
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeydown);
+    return () => document.removeEventListener("keydown", handleKeydown);
+  }, [isOpen, onClose]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -57,15 +96,20 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
       {/* Slide-out panel */}
       <nav
+        ref={panelRef}
         className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-background shadow-xl flex flex-col animate-in slide-in-from-right duration-300"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mobile-menu-title"
         aria-label="Mobile navigation"
       >
         {/* Header with close button */}
         <div className="flex items-center justify-between p-4 border-b border-secondary-warm">
-          <span className="text-lg font-heading font-semibold text-foreground tracking-wide">Menu</span>
+          <span id="mobile-menu-title" className="text-lg font-heading font-semibold text-foreground tracking-wide">Menu</span>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <button
+              ref={closeButtonRef}
               onClick={onClose}
               className="cursor-pointer p-2 rounded-full hover:bg-primary-light/30 transition-all min-h-touch min-w-touch flex items-center justify-center"
               aria-label="Close menu"

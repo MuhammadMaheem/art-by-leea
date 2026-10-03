@@ -1,0 +1,80 @@
+"use client";
+
+import Link from "next/link";
+import { ShoppingBag, ShieldAlert } from "lucide-react";
+import Container from "@/components/layout/Container";
+import CartItemComponent from "@/components/cart/CartItem";
+import CartSummary from "@/components/cart/CartSummary";
+import Button from "@/components/ui/Button";
+import { useCartStore } from "@/stores/cartStore";
+import { useAuth } from "@/providers/AuthProvider";
+
+export default function CartPageContent() {
+  const items = useCartStore((s) => s.items);
+  const clearCart = useCartStore((s) => s.clearCart);
+  const { isAdmin } = useAuth();
+
+  return (
+    <section className="py-14 md:py-20">
+      <Container>
+        <h1 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">
+          Shopping Cart
+        </h1>
+        <p className="text-sm italic text-primary/70 mb-10">
+          &ldquo;Art is the only way to run away without leaving home.&rdquo; — Twyla Tharp
+        </p>
+
+        {isAdmin && (
+          <div className="mb-6 rounded-gallery border border-primary/20 bg-primary-light/10 dark:bg-primary/10 dark:border-primary/15 p-4 flex items-center gap-3">
+            <ShieldAlert className="w-5 h-5 text-primary-dark dark:text-beige shrink-0" aria-hidden="true" />
+            <p className="text-sm text-foreground">
+              You are in <strong>Admin mode</strong>. Purchasing is disabled. Switch to Customer mode in your profile to shop.
+            </p>
+          </div>
+        )}
+
+        {items.length === 0 ? (
+          <div className="text-center py-20 bg-primary-light/10 dark:bg-primary/5 rounded-gallery border border-primary-light/15 dark:border-primary/10">
+            <ShoppingBag
+              className="w-16 h-16 text-muted/40 mx-auto mb-4"
+              aria-hidden="true"
+            />
+            <h2 className="text-xl font-heading font-semibold text-foreground mb-2">
+              Your cart is empty
+            </h2>
+            <p className="text-muted mb-6">
+              Discover beautiful artworks in our gallery.
+            </p>
+            <Link href="/shop">
+              <Button>Browse Gallery</Button>
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-muted">
+                  {items.length} item{items.length !== 1 ? "s" : ""} in cart
+                </span>
+                <button
+                  onClick={clearCart}
+                  className="text-sm text-error hover:text-error/80 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 rounded-full px-3 py-1 min-h-touch"
+                >
+                  Clear all
+                </button>
+              </div>
+
+              {items.map((item) => (
+                <CartItemComponent key={item.id} item={item} />
+              ))}
+            </div>
+
+            <div>
+              <CartSummary />
+            </div>
+          </div>
+        )}
+      </Container>
+    </section>
+  );
+}

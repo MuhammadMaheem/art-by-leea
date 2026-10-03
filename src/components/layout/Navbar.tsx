@@ -26,7 +26,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, isAdmin, viewMode, profile } = useAuth();
   const totalItems = useCartStore((s) => s.totalItems);
-  const { notifications, unreadCount, markAllRead } = useNotifications();
+  const { notifications, unreadCount, markAllRead, markRead } = useNotifications();
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -147,7 +147,6 @@ export default function Navbar() {
                 <button
                   onClick={() => {
                     setShowNotifications(!showNotifications);
-                    if (!showNotifications && unreadCount > 0) markAllRead();
                   }}
                   className="relative p-2 rounded-full hover:bg-primary-light/30 transition-all min-h-touch min-w-touch flex items-center justify-center cursor-pointer"
                   aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
@@ -161,8 +160,16 @@ export default function Navbar() {
                 </button>
                 {showNotifications && (
                   <div className="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-1rem)] max-h-96 overflow-y-auto bg-surface rounded-gallery shadow-lg border border-primary/10 z-50">
-                    <div className="px-4 py-3 border-b border-secondary">
+                    <div className="px-4 py-3 border-b border-secondary flex items-center justify-between gap-3">
                       <h3 className="font-heading font-semibold text-foreground text-sm">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={markAllRead}
+                          className="text-xs font-medium text-primary hover:text-primary-dark transition-colors"
+                        >
+                          Mark all read
+                        </button>
+                      )}
                     </div>
                     {notifications.length === 0 ? (
                       <p className="px-4 py-6 text-center text-muted text-sm">All caught up — no new brushstrokes to report.</p>
@@ -172,7 +179,10 @@ export default function Navbar() {
                           <Link
                             key={n.id}
                             href={n.link || "#"}
-                            onClick={() => setShowNotifications(false)}
+                            onClick={() => {
+                              void markRead(n.id);
+                              setShowNotifications(false);
+                            }}
                             className="block px-4 py-3 hover:bg-secondary/50 transition-colors"
                           >
                             <p className="text-sm font-medium text-foreground">{n.title}</p>

@@ -1,9 +1,15 @@
 /**
  * Login Page — Sign in to your account.
  */
+import type { Metadata } from "next";
 import { Palette } from "lucide-react";
 import Container from "@/components/layout/Container";
 import LoginForm from "@/components/auth/LoginForm";
+
+export const metadata: Metadata = {
+  title: "Sign In | Art By Aleeha",
+  description: "Sign in to manage your cart, orders, commissions, and messages.",
+};
 
 export default function LoginPage() {
   return (

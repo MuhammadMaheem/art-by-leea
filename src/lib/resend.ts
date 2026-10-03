@@ -23,7 +23,6 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.com";
 const TEST_OVERRIDE = process.env.RESEND_TEST_OVERRIDE_EMAIL;
 function resolveRecipient(email: string): string {
   if (TEST_OVERRIDE) {
-    console.log(`[Resend] Sandbox override: ${email} → ${TEST_OVERRIDE}`);
     return TEST_OVERRIDE;
   }
   return email;

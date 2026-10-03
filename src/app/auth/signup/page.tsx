@@ -1,9 +1,15 @@
 /**
  * Signup Page — Create a new account.
  */
+import type { Metadata } from "next";
 import { UserPlus } from "lucide-react";
 import Container from "@/components/layout/Container";
 import SignupForm from "@/components/auth/SignupForm";
+
+export const metadata: Metadata = {
+  title: "Create Account | Art By Aleeha",
+  description: "Create your Art By Aleeha account to purchase artworks and request commissions.",
+};
 
 export default function SignupPage() {
   return (

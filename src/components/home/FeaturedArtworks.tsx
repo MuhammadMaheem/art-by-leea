@@ -20,14 +20,15 @@ import type { Artwork } from "@/types";
 export default function FeaturedArtworks() {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchFeatured() {
       try {
         const data = await getFeaturedArtworks();
         setArtworks(data);
-      } catch (error) {
-        console.error("Error fetching featured artworks:", error);
+      } catch {
+        setError("We couldn't load featured artworks right now.");
       } finally {
         setLoading(false);
       }
@@ -66,8 +67,16 @@ export default function FeaturedArtworks() {
           </div>
         )}
 
+        {/* Error state */}
+        {!loading && error && (
+          <div className="text-center py-20 bg-error/10 border border-error/20 rounded-gallery">
+            <p className="text-foreground font-medium mb-2">Featured artworks are temporarily unavailable.</p>
+            <p className="text-sm text-muted">Please refresh in a moment.</p>
+          </div>
+        )}
+
         {/* Artworks grid */}
-        {!loading && artworks.length > 0 && (
+        {!loading && !error && artworks.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {artworks.map((artwork) => (
               <Link
@@ -100,7 +109,7 @@ export default function FeaturedArtworks() {
         )}
 
         {/* Empty state — shown before data is seeded */}
-        {!loading && artworks.length === 0 && (
+        {!loading && !error && artworks.length === 0 && (
           <div className="text-center py-20 bg-secondary/40 rounded-gallery">
             <p className="text-muted text-lg mb-4">
               No featured artworks yet. Seed the database to see artwork here.

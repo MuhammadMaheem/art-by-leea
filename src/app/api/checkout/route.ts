@@ -114,7 +114,6 @@ export async function POST(request: NextRequest) {
       quantity: i.quantity,
     }));
     const resolvedAdminEmail = process.env.ADMIN_EMAIL || adminEmail || "artbyaleeha@gmail.com";
-    console.log(`[Checkout] Sending emails — customer: ${userEmail}, admin: ${resolvedAdminEmail}`);
 
     // Send confirmation email to customer
     sendOrderConfirmation({
@@ -122,8 +121,6 @@ export async function POST(request: NextRequest) {
       orderId: orderRef.id,
       items: emailItems,
       total,
-    }).then((result) => {
-      console.log("[Checkout] Customer email sent:", JSON.stringify(result));
     }).catch((err) => console.error("[Checkout] Customer email error:", err));
 
     // Send receipt to admin for verification
@@ -134,8 +131,6 @@ export async function POST(request: NextRequest) {
       items: emailItems,
       total,
       adminEmail: resolvedAdminEmail || undefined,
-    }).then((result) => {
-      console.log("[Checkout] Admin email sent:", JSON.stringify(result));
     }).catch((err) => console.error("[Checkout] Admin email error:", err));
 
     return NextResponse.json({ success: true, orderId: orderRef.id });

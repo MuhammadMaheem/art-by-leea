@@ -13,6 +13,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -61,5 +62,12 @@ export function useNotifications() {
     await batch.commit();
   };
 
-  return { notifications, unreadCount, markAllRead };
+  const markRead = async (id: string) => {
+    if (!user) return;
+    const target = notifications.find((n) => n.id === id);
+    if (!target || target.read) return;
+    await updateDoc(doc(db, "notifications", id), { read: true });
+  };
+
+  return { notifications, unreadCount, markAllRead, markRead };
 }

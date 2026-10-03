@@ -1,9 +1,15 @@
 /**
  * Commission Page — Request custom art commissions.
  */
+import type { Metadata } from "next";
 import Container from "@/components/layout/Container";
 import CommissionForm from "@/components/commission/CommissionForm";
 import { PenTool, Clock, MessageCircle, CheckCircle } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Custom Commissions | Art By Aleeha",
+  description: "Request a custom artwork with your vision, style, and budget.",
+};
 
 const steps = [
   {
